@@ -1,13 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { api, buildUrl } from "@shared/routes";
-import { InsertProduct } from "@shared/schema";
-import { useToast } from "@/hooks/use-toast";
+import { api, buildUrl, type InsertProduct } from "@shared/routes";
 
 export function useProducts() {
   return useQuery({
     queryKey: [api.products.list.path],
     queryFn: async () => {
-      const res = await fetch(api.products.list.path);
+      const res = await fetch(api.products.list.path, { credentials: "include" });
       if (!res.ok) throw new Error("Failed to fetch products");
       return api.products.list.responses[200].parse(await res.json());
     },
@@ -19,19 +17,16 @@ export function useProduct(id: number) {
     queryKey: [api.products.get.path, id],
     queryFn: async () => {
       const url = buildUrl(api.products.get.path, { id });
-      const res = await fetch(url);
+      const res = await fetch(url, { credentials: "include" });
       if (res.status === 404) return null;
       if (!res.ok) throw new Error("Failed to fetch product");
       return api.products.get.responses[200].parse(await res.json());
     },
-    enabled: !!id,
   });
 }
 
 export function useCreateProduct() {
   const queryClient = useQueryClient();
-  const { toast } = useToast();
-
   return useMutation({
     mutationFn: async (data: InsertProduct) => {
       const res = await fetch(api.products.create.path, {
@@ -50,21 +45,6 @@ export function useCreateProduct() {
       }
       return api.products.create.responses[201].parse(await res.json());
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [api.products.list.path] });
-      toast({
-        title: "CONFIDANT BOND INCREASED",
-        description: "New item has been added to the stash.",
-        className: "bg-black text-white border-red-600 font-display uppercase tracking-widest",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "SECURITY ALERT",
-        description: error.message,
-        variant: "destructive",
-        className: "bg-red-900 text-white font-display",
-      });
-    }
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: [api.products.list.path] }),
   });
 }

@@ -5,59 +5,69 @@
 @tailwind utilities;
 
 :root {
-  /* P5 Color Palette */
-  --p5-red: 354 100% 43%;     /* #D90018 */
-  --p5-black: 0 0% 0%;        /* #000000 */
-  --p5-white: 0 0% 95%;       /* #F2F2F2 */
-  --p5-grey: 0 0% 15%;        /* #262626 */
+  --background: 0 0% 8%;      /* Deep charcoal/black */
+  --foreground: 0 0% 95%;     /* Off-white */
   
-  --background: var(--p5-grey);
-  --foreground: var(--p5-white);
-  --primary: var(--p5-red);
-  --primary-foreground: var(--p5-white);
-  --secondary: var(--p5-black);
-  --secondary-foreground: var(--p5-white);
-  --muted: 0 0% 20%;
-  --muted-foreground: 0 0% 70%;
-  --accent: var(--p5-red);
-  --accent-foreground: var(--p5-white);
-  --destructive: 0 84% 60%;
-  --border: var(--p5-red);
+  --primary: 353 100% 42%;    /* Persona 5 Crimson Red #d90018 */
+  --primary-foreground: 0 0% 100%;
+  
+  --secondary: 0 0% 20%;      /* Gunmetal Grey */
+  --secondary-foreground: 0 0% 90%;
+  
+  --muted: 0 0% 15%;
+  --muted-foreground: 0 0% 60%;
+  
+  --accent: 0 0% 100%;        /* Stark White for sharp accents */
+  --accent-foreground: 0 0% 0%;
+  
+  --destructive: 0 100% 50%;
+  --destructive-foreground: 0 0% 100%;
+  
+  --border: 0 0% 25%;
   --input: 0 0% 20%;
-  --ring: var(--p5-red);
-  
+  --ring: 353 100% 42%;
+
   --font-display: 'Anton', sans-serif;
   --font-body: 'Roboto Condensed', sans-serif;
 }
 
 @layer base {
   body {
-    @apply bg-background text-foreground antialiased selection:bg-primary selection:text-white overflow-x-hidden;
-    font-family: var(--font-body);
+    @apply bg-background text-foreground font-body overflow-x-hidden selection:bg-primary selection:text-white;
     background-image: 
-      radial-gradient(circle at 50% 50%, #333 1px, transparent 1px),
-      linear-gradient(45deg, rgba(0,0,0,0.8) 0%, rgba(20,20,20,0.9) 100%);
-    background-size: 20px 20px, 100% 100%;
-    background-attachment: fixed;
+      radial-gradient(circle at 50% 50%, rgba(20, 20, 20, 0.8) 0%, rgba(0, 0, 0, 1) 100%),
+      repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.03) 0px, rgba(255, 255, 255, 0.03) 1px, transparent 1px, transparent 10px);
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-display);
-    @apply uppercase tracking-wide;
+    @apply font-display tracking-wider uppercase transform -skew-x-6;
   }
 }
 
-@layer components {
-  .p5-clip {
-    clip-path: polygon(5% 0, 100% 0, 100% 90%, 95% 100%, 0 100%, 0 10%);
+@layer utilities {
+  .clip-path-slant {
+    clip-path: polygon(5% 0, 100% 0, 100% 100%, 0% 100%);
   }
   
-  .p5-clip-button {
-    clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+  .clip-path-jagged {
+    clip-path: polygon(
+      0% 0%, 
+      100% 0%, 
+      100% 85%, 
+      95% 100%, 
+      5% 100%, 
+      0% 85%
+    );
   }
 
-  .p5-border {
-    @apply relative border-2 border-primary/50 hover:border-primary transition-colors duration-300;
+  .clip-path-shard {
+    clip-path: polygon(
+      10% 0, 100% 0, 90% 100%, 0% 100%
+    );
+  }
+
+  .text-shadow-red {
+    text-shadow: 2px 2px 0px rgba(217, 0, 24, 0.5);
   }
 }
 
@@ -66,11 +76,12 @@
   width: 10px;
 }
 ::-webkit-scrollbar-track {
-  @apply bg-zinc-900;
+  background: #1a1a1a;
 }
 ::-webkit-scrollbar-thumb {
-  @apply bg-primary rounded-none;
+  background: #d90018;
+  border-radius: 0;
 }
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-red-600;
+  background: #ff001e;
 }

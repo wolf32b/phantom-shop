@@ -71,6 +71,15 @@ export const api = {
       },
     },
   },
+  stats: {
+    getRobuxCounter: {
+      method: 'GET' as const,
+      path: '/api/stats/robux',
+      responses: {
+        200: z.object({ value: z.number() }),
+      },
+    },
+  },
 };
 
 export function buildUrl(path: string, params?: Record<string, string | number>): string {

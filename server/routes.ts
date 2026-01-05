@@ -88,6 +88,11 @@ export async function registerRoutes(
     res.json(req.user);
   });
 
+  app.get(api.stats.getRobuxCounter.path, async (req, res) => {
+    const value = await storage.getGlobalStat('total_robux');
+    res.json({ value });
+  });
+
   // Seed data
   if ((await storage.getProducts()).length === 0) {
     await storage.createProduct({
@@ -111,6 +116,12 @@ export async function registerRoutes(
       imageUrl: "https://images.unsplash.com/photo-1586075010923-2dd45eeed858",
       category: "Item"
     });
+  }
+
+  // Ensure stats seeded
+  const currentRobux = await storage.getGlobalStat('total_robux');
+  if (currentRobux === 0) {
+    await storage.setGlobalStat('total_robux', 0);
   }
 
   return httpServer;

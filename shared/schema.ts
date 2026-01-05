@@ -22,6 +22,12 @@ export const orders = pgTable("orders", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const globalStats = pgTable("global_stats", {
+  id: serial("id").primaryKey(),
+  key: text("key").notNull().unique(), // e.g., 'total_robux'
+  value: integer("value").default(0).notNull(),
+});
+
 export const insertProductSchema = createInsertSchema(products).omit({ 
   id: true 
 });

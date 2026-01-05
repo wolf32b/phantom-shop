@@ -1,6 +1,6 @@
 import { db } from "./db";
 import {
-  users, products, orders,
+  users, products, orders, globalStats,
   type User, type UpsertUser,
   type Product, type InsertProduct,
   type Order, type InsertOrder
@@ -17,6 +17,9 @@ export interface IStorage {
   
   createOrder(order: InsertOrder): Promise<Order>;
   getOrdersForUser(userId: string): Promise<Order[]>;
+
+  getGlobalStat(key: string): Promise<number>;
+  setGlobalStat(key: string, value: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -51,6 +54,20 @@ export class DatabaseStorage implements IStorage {
 
   async getOrdersForUser(userId: string): Promise<Order[]> {
     return await db.select().from(orders).where(eq(orders.userId, userId));
+  }
+
+  async getGlobalStat(key: string): Promise<number> {
+    const [stat] = await db.select().from(globalStats).where(eq(globalStats.key, key));
+    return stat ? stat.value : 0;
+  }
+
+  async setGlobalStat(key: string, value: number): Promise<void> {
+    await db.insert(globalStats)
+      .values({ key, value })
+      .onConflictDoUpdate({
+        target: globalStats.key,
+        set: { value }
+      });
   }
 }
 

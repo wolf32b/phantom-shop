@@ -1,39 +1,47 @@
-import { ButtonHTMLAttributes } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import React from "react";
 
-interface PhantomButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "outline";
+interface PhantomButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  children: React.ReactNode;
+  variant?: "primary" | "secondary" | "danger";
+  isLoading?: boolean;
 }
 
 export function PhantomButton({ 
   children, 
   className, 
-  variant = "primary",
+  variant = "primary", 
+  isLoading, 
+  disabled,
   ...props 
 }: PhantomButtonProps) {
-  
-  const baseStyles = "relative px-8 py-3 font-display uppercase tracking-wider text-xl transition-all duration-300 transform";
+  const baseStyles = "relative px-8 py-3 font-display uppercase tracking-widest text-lg font-bold transform transition-all duration-200";
   
   const variants = {
-    primary: "bg-primary text-white hover:bg-black hover:text-primary skew-x-[-10deg] border-2 border-transparent hover:border-primary",
-    secondary: "bg-black text-white hover:bg-primary hover:text-black skew-x-[-10deg] border-2 border-primary",
-    outline: "bg-transparent text-primary border-2 border-primary hover:bg-primary hover:text-white skew-x-[-10deg]",
+    primary: "bg-primary text-white hover:bg-white hover:text-black border-2 border-black hover:border-primary",
+    secondary: "bg-black text-white border-2 border-white hover:bg-white hover:text-black",
+    danger: "bg-red-900 text-white border-2 border-red-500 hover:bg-red-600"
   };
 
   return (
     <motion.button
-      whileHover={{ scale: 1.05, x: 5 }}
+      whileHover={{ scale: 1.05, skewX: -12 }}
       whileTap={{ scale: 0.95 }}
-      className={cn(baseStyles, variants[variant], className)}
+      disabled={disabled || isLoading}
+      className={cn(
+        baseStyles, 
+        variants[variant], 
+        "clip-path-shard shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]",
+        (disabled || isLoading) && "opacity-50 cursor-not-allowed",
+        className
+      )}
       {...props}
     >
-      <span className="block skew-x-[10deg] drop-shadow-md">
-        {children}
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-200%] animate-[shimmer_2s_infinite]" />
+      <span className={cn("relative z-10 flex items-center justify-center gap-2", isLoading && "animate-pulse")}>
+        {isLoading ? "STEALING..." : children}
       </span>
-      {/* Decorative stars/elements */}
-      <span className="absolute -top-1 -right-1 w-2 h-2 bg-white rotate-45 opacity-0 group-hover:opacity-100 transition-opacity" />
-      <span className="absolute -bottom-1 -left-1 w-2 h-2 bg-white rotate-45 opacity-0 group-hover:opacity-100 transition-opacity" />
     </motion.button>
   );
 }
