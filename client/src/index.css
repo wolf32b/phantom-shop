@@ -46,12 +46,28 @@
 
 @layer utilities {
   .clip-path-p5-angle {
-    clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+    clip-path: polygon(5% 0, 100% 0, 95% 100%, 0% 100%);
+  }
+
+  .clip-path-comic-1 {
+    clip-path: polygon(0% 10%, 95% 0%, 100% 90%, 5% 100%);
+  }
+
+  .clip-path-comic-2 {
+    clip-path: polygon(5% 0%, 100% 5%, 95% 100%, 0% 95%);
   }
   
   .halftone-pattern {
     background-image: radial-gradient(circle, currentColor 1px, transparent 1px);
-    background-size: 4px 4px;
+    background-size: 6px 6px;
+  }
+
+  .comic-border {
+    @apply border-4 border-white shadow-[8px_8px_0px_0px_rgba(220,20,60,1)];
+  }
+
+  .comic-border-black {
+    @apply border-4 border-black shadow-[6px_6px_0px_0px_rgba(255,255,255,1)];
   }
 
   .red-shimmer {
@@ -71,17 +87,23 @@
   }
 
   .text-shadow-red {
-    text-shadow: 3px 3px 0px rgba(0, 0, 0, 1), 5px 5px 0px rgba(220, 20, 60, 0.3);
+    text-shadow: 4px 4px 0px rgba(0, 0, 0, 1), 7px 7px 0px rgba(220, 20, 60, 0.5);
   }
 
   .phantom-card {
-    @apply relative bg-black border-2 border-primary/50 overflow-visible;
-    clip-path: polygon(2% 0%, 100% 0%, 98% 100%, 0% 100%);
+    @apply relative bg-black border-4 border-white overflow-visible transition-transform duration-200;
+    clip-path: polygon(0% 5%, 98% 0%, 100% 95%, 2% 100%);
+    box-shadow: 12px 12px 0px 0px #DC143C;
+  }
+
+  .phantom-card:hover {
+    transform: translate(-4px, -4px);
+    box-shadow: 16px 16px 0px 0px #DC143C;
   }
 
   .phantom-card::before {
     content: '';
-    @apply absolute -inset-0.5 bg-primary/20 -z-10 blur-sm opacity-0 hover:opacity-100 transition-opacity;
+    @apply absolute -inset-1 bg-primary/10 -z-10 blur-md opacity-0 hover:opacity-100 transition-opacity;
   }
 }
 
