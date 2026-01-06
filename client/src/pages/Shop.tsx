@@ -67,34 +67,34 @@ export default function Shop() {
   return (
     <div className="container mx-auto px-4 py-12 text-right" dir="rtl">
       <div className="mb-16 relative">
-        <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary clip-path-comic-1 rotate-12 opacity-20 halftone-pattern" />
-        <h2 className="text-6xl font-display text-white mb-6 text-shadow-gold transform -skew-x-12">إجمالي الروبوكس المتاح</h2>
+        <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary clip-path-comic-1 rotate-12 opacity-30 halftone-pattern" />
+        <h2 className="text-6xl font-display text-white mb-6 text-shadow-blood transform -skew-x-12 italic">إجمالي الروبوكس المتاح</h2>
         <PhantomCounter value={stats?.value || 0} />
       </div>
 
       <div className="max-w-2xl mx-auto relative">
-        <div className="absolute -inset-4 bg-primary/20 clip-path-comic-2 -z-10 halftone-pattern" />
+        <div className="absolute -inset-4 bg-secondary/10 clip-path-comic-2 -z-10 halftone-pattern" />
         <PhantomCard delay={0.1}>
           <div className="space-y-8 p-10">
             <div className="text-center relative">
-              <div className="absolute -top-4 -left-4 text-white text-6xl font-display opacity-10 italic">STUDENT & THIEF</div>
-              <h3 className="text-5xl font-display text-white mb-4 gold-shimmer tracking-tighter">
+              <div className="absolute -top-6 -left-6 text-primary text-7xl font-display opacity-20 italic transform rotate-[-15deg]">THE PHANTOM</div>
+              <h3 className="text-6xl font-display text-white mb-4 gold-shimmer tracking-tighter italic">
                 اطلب الروبوكس الخاص بك
               </h3>
-              <p className="text-white/80 font-body text-xl italic">
+              <p className="text-white font-body text-2xl italic">
                 أدخل كمية الروبوكس التي تريد تحويلها إلى حسابك في روبلوكس
               </p>
             </div>
 
             <div className="space-y-6">
               <div className="relative group">
-                <div className="absolute -inset-2 bg-primary/10 clip-path-comic-1 transition-all group-focus-within:bg-primary/30" />
+                <div className="absolute -inset-2 bg-secondary/20 clip-path-comic-1 transition-all group-focus-within:bg-secondary/40" />
                 <input
                   type="number"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   placeholder="000"
-                  className="w-full bg-black border-4 border-primary p-6 text-6xl text-center text-primary font-display focus:shadow-[0_0_20px_rgba(255,215,0,0.5)] focus:outline-none transition-all relative z-10"
+                  className="w-full bg-black border-4 border-secondary p-6 text-6xl text-center text-secondary font-display focus:shadow-[0_0_20px_rgba(255,215,0,0.6)] focus:outline-none transition-all relative z-10"
                 />
                 <div className="absolute right-6 top-1/2 -translate-y-1/2 text-4xl text-white font-display z-10">
                   R$
@@ -104,14 +104,14 @@ export default function Shop() {
               <PhantomButton 
                 onClick={handleRequestRobux}
                 disabled={isOrdering}
-                className="w-full text-4xl py-8 shadow-[10px_10px_0px_0px_#000] hover:shadow-[14px_14px_0px_0px_#000]"
+                className="w-full text-4xl py-8 shadow-[10px_10px_0px_0px_#FF0019] hover:shadow-[14px_14px_0px_0px_#FF0019]"
               >
                 {isOrdering ? "جاري المعالجة..." : "سرقة الروبوكس"}
               </PhantomButton>
             </div>
 
-            <div className="bg-primary p-6 border-4 border-black clip-path-comic-1 transform rotate-1">
-              <p className="text-lg text-black font-bold text-center tracking-tight uppercase">
+            <div className="bg-secondary p-6 border-4 border-black clip-path-comic-1 transform rotate-2">
+              <p className="text-xl text-black font-bold text-center tracking-tight uppercase italic">
                 Eventful days at School!
               </p>
             </div>

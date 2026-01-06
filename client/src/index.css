@@ -8,11 +8,11 @@
   --background: 0 0% 0%;       /* Pure black */
   --foreground: 0 0% 95%;      /* Off-white */
   
-  --primary: 45 100% 50%;     /* Brilliant Gold #FFD700 */
-  --primary-foreground: 0 0% 0%;
+  --primary: 354 100% 50%;    /* Bright Blood Red #FF0019 */
+  --primary-foreground: 0 0% 100%;
   
-  --secondary: 354 70% 47%;   /* Phantom Red #DC143C */
-  --secondary-foreground: 0 0% 100%;
+  --secondary: 45 100% 50%;   /* Brilliant Gold #FFD700 */
+  --secondary-foreground: 0 0% 0%;
   
   --muted: 0 0% 10%;
   --muted-foreground: 0 0% 60%;
@@ -33,10 +33,10 @@
 
 @layer base {
   body {
-    @apply bg-background text-foreground font-body overflow-x-hidden selection:bg-primary selection:text-black;
+    @apply bg-background text-foreground font-body overflow-x-hidden selection:bg-primary selection:text-white;
     background-image: 
-      radial-gradient(circle at 50% 50%, rgba(220, 20, 60, 0.15) 0%, rgba(0, 0, 0, 1) 100%),
-      repeating-linear-gradient(45deg, rgba(220, 20, 60, 0.05) 0px, rgba(220, 20, 60, 0.05) 1px, transparent 1px, transparent 10px);
+      radial-gradient(circle at 50% 50%, rgba(255, 0, 25, 0.2) 0%, rgba(0, 0, 0, 1) 100%),
+      repeating-linear-gradient(45deg, rgba(255, 215, 0, 0.03) 0px, rgba(255, 215, 0, 0.03) 1px, transparent 1px, transparent 10px);
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -62,23 +62,19 @@
     background-size: 6px 6px;
   }
 
-  .comic-border {
-    @apply border-4 border-white shadow-[8px_8px_0px_0px_rgba(220,20,60,1)];
-  }
-
   .comic-border-gold {
-    @apply border-4 border-primary shadow-[6px_6px_0px_0px_rgba(255,255,255,1)];
+    @apply border-4 border-secondary shadow-[8px_8px_0px_0px_rgba(255,0,25,1)];
   }
 
   .gold-shimmer {
     background: linear-gradient(
       90deg,
       rgba(255, 215, 0, 0) 0%,
-      rgba(255, 215, 0, 0.8) 50%,
+      rgba(255, 215, 0, 0.9) 50%,
       rgba(255, 215, 0, 0) 100%
     );
     background-size: 200% 100%;
-    animation: shimmer 3s infinite linear;
+    animation: shimmer 2s infinite linear;
   }
 
   @keyframes shimmer {
@@ -86,24 +82,24 @@
     100% { background-position: 200% 0; }
   }
 
-  .text-shadow-gold {
-    text-shadow: 4px 4px 0px rgba(0, 0, 0, 1), 7px 7px 0px rgba(255, 215, 0, 0.5);
+  .text-shadow-blood {
+    text-shadow: 4px 4px 0px rgba(0, 0, 0, 1), 7px 7px 0px rgba(255, 0, 25, 0.6);
   }
 
   .phantom-card {
-    @apply relative bg-black border-4 border-primary overflow-visible transition-transform duration-200;
+    @apply relative bg-black border-4 border-secondary overflow-visible transition-transform duration-200;
     clip-path: polygon(0% 5%, 98% 0%, 100% 95%, 2% 100%);
-    box-shadow: 12px 12px 0px 0px #000;
+    box-shadow: 12px 12px 0px 0px #FF0019;
   }
 
   .phantom-card:hover {
     transform: translate(-4px, -4px);
-    box-shadow: 16px 16px 0px 0px #000;
+    box-shadow: 16px 16px 0px 0px #FF0019;
   }
 
   .phantom-card::before {
     content: '';
-    @apply absolute -inset-1 bg-primary/10 -z-10 blur-md opacity-0 hover:opacity-100 transition-opacity;
+    @apply absolute -inset-1 bg-secondary/20 -z-10 blur-md opacity-0 hover:opacity-100 transition-opacity;
   }
 }
 
@@ -115,9 +111,9 @@
   background: #000;
 }
 ::-webkit-scrollbar-thumb {
-  background: #DC143C;
+  background: #FF0019;
   border: 3px solid #000;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #FFF;
+  background: #FFD700;
 }
