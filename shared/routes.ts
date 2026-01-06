@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { insertOrderSchema, users, products, orders } from './schema';
+import { insertOrderSchema, users, orders } from './schema';
 
 export const errorSchemas = {
   validation: z.object({

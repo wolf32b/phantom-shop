@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { useUser } from "@/hooks/use-user";
 import { cn } from "@/lib/utils";
 
+import phantomLogo from "../PhantomThieves.webp";
+
 export function Navbar() {
   const [location] = useLocation();
   const { data: user } = useUser();
@@ -24,9 +26,11 @@ export function Navbar() {
 
       <div className="container mx-auto px-4 h-20 flex items-center justify-between">
         <Link href="/" className="group flex items-center gap-2 cursor-pointer">
-          <div className="w-10 h-10 bg-primary flex items-center justify-center transform rotate-3 group-hover:rotate-12 transition-transform duration-300">
-            <span className="font-display text-2xl text-black font-bold">P5</span>
-          </div>
+          <img 
+            src={phantomLogo} 
+            alt="Phantom Thieves Logo" 
+            className="w-12 h-12 object-contain group-hover:scale-110 transition-transform duration-300"
+          />
           <span className="font-display text-2xl tracking-widest text-white group-hover:text-primary transition-colors">
             PHANTOM<span className="text-primary">SHOP</span>
           </span>

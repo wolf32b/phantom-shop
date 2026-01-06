@@ -1,8 +1,7 @@
 import { db } from "./db";
 import {
-  users, products, orders, globalStats,
+  users, orders, globalStats,
   type User, type UpsertUser,
-  type Product, type InsertProduct,
   type Order, type InsertOrder
 } from "@shared/schema";
 import { eq } from "drizzle-orm";
