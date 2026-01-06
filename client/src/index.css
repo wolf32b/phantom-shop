@@ -8,45 +8,45 @@
   --background: 0 0% 100%;       /* Pure White */
   --foreground: 0 0% 0%;         /* Pure Black */
   
-  --primary: 0 0% 0%;          /* Black Primary */
-  --primary-foreground: 0 0% 100%; /* White text on Black */
+  --primary: 354 100% 50%;      /* #FF0019 - Crimson Red */
+  --primary-foreground: 0 0% 100%;
   
-  --secondary: 0 0% 0%;        /* Black Secondary */
+  --secondary: 0 0% 0%;        /* Black */
   --secondary-foreground: 0 0% 100%;
   
   --muted: 0 0% 90%;
   --muted-foreground: 0 0% 20%;
   
-  --accent: 0 0% 0%;           /* Black accent */
+  --accent: 354 100% 50%;
   --accent-foreground: 0 0% 100%;
   
-  --border: 0 0% 0%;           /* Black border */
+  --border: 0 0% 0%;
   --input: 0 0% 100%;
-  --ring: 0 0% 0%;
+  --ring: 354 100% 50%;
 
   --font-display: 'Oswald', sans-serif;
   --font-body: 'Roboto Condensed', sans-serif;
 }
 
 .dark {
-  --background: 0 0% 5%;        /* Less dark than pure black */
-  --foreground: 0 0% 95%;       /* Off-white */
+  --background: 0 0% 0%;        /* Pure Black */
+  --foreground: 0 0% 100%;      /* Pure White */
   
-  --primary: 354 100% 50%;     /* Bright Blood Red #FF0019 */
+  --primary: 354 100% 50%;      /* Crimson Red */
   --primary-foreground: 0 0% 100%;
   
-  --secondary: 45 100% 50%;    /* Brilliant Gold #FFD700 */
+  --secondary: 0 0% 100%;       /* White */
   --secondary-foreground: 0 0% 0%;
   
-  --muted: 0 0% 12%;
+  --muted: 0 0% 10%;
   --muted-foreground: 0 0% 60%;
   
-  --accent: 45 100% 50%;       /* Gold accent */
-  --accent-foreground: 0 0% 0%;
+  --accent: 354 100% 50%;
+  --accent-foreground: 0 0% 100%;
   
-  --border: 0 0% 20%;
-  --input: 0 0% 12%;
-  --ring: 45 100% 50%;
+  --border: 354 100% 50%;
+  --input: 0 0% 5%;
+  --ring: 354 100% 50%;
 }
 
 @layer base {

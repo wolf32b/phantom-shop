@@ -73,30 +73,35 @@ export default function Shop() {
       </div>
 
       <div className="max-w-2xl mx-auto relative">
-        <div className="absolute -inset-4 bg-secondary/10 clip-path-comic-2 -z-10 halftone-pattern" />
-        <PhantomCard delay={0.1}>
-          <div className="space-y-8 p-10">
-            <div className="text-center relative">
-              <div className="absolute -top-6 -left-6 text-primary text-7xl font-display opacity-20 italic transform rotate-[-15deg]">THE PHANTOM</div>
-              <h3 className="text-6xl font-display text-white mb-4 gold-shimmer tracking-tighter italic">
-                اطلب الروبوكس الخاص بك
+        <div className="absolute -inset-10 bg-primary/10 clip-path-comic-1 -z-10 halftone-pattern animate-pulse" />
+        <div className="absolute -inset-20 bg-black/40 clip-path-comic-2 -z-20 transform rotate-3" />
+        
+        <PhantomCard delay={0.1} className="transform -rotate-1">
+          <div className="space-y-8 p-10 bg-black relative overflow-hidden">
+            {/* Persona 5 Style Red Slash */}
+            <div className="absolute top-0 left-0 w-full h-24 bg-primary -skew-y-6 -translate-y-12 z-0" />
+            
+            <div className="text-center relative z-10">
+              <div className="absolute -top-12 -left-12 text-white text-8xl font-display opacity-10 italic transform rotate-[-25deg] pointer-events-none">STOLEN</div>
+              <h3 className="text-7xl font-display text-white mb-4 tracking-tighter italic uppercase text-shadow-blood">
+                BLACK MARKET
               </h3>
-              <p className="text-white font-body text-2xl italic">
-                أدخل كمية الروبوكس التي تريد تحويلها إلى حسابك في روبلوكس
+              <p className="text-primary font-display text-3xl italic font-bold border-y-4 border-primary py-2 inline-block">
+                CONFIDENTIAL EXCHANGE
               </p>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-6 relative z-10">
               <div className="relative group">
-                <div className="absolute -inset-2 bg-secondary/20 clip-path-comic-1 transition-all group-focus-within:bg-secondary/40" />
+                <div className="absolute -inset-4 bg-primary/20 clip-path-comic-1 transition-all group-focus-within:bg-primary/40 -z-10" />
                 <input
                   type="number"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   placeholder="000"
-                  className="w-full bg-black border-4 border-secondary p-6 text-6xl text-center text-secondary font-display focus:shadow-[0_0_20px_rgba(255,215,0,0.6)] focus:outline-none transition-all relative z-10"
+                  className="w-full bg-black border-8 border-primary p-8 text-7xl text-center text-white font-display focus:shadow-[0_0_40px_rgba(255,0,25,0.6)] focus:outline-none transition-all relative z-10 italic"
                 />
-                <div className="absolute right-6 top-1/2 -translate-y-1/2 text-4xl text-white font-display z-10">
+                <div className="absolute left-6 top-1/2 -translate-y-1/2 text-5xl text-primary font-display z-10 animate-bounce">
                   R$
                 </div>
               </div>
@@ -104,15 +109,16 @@ export default function Shop() {
               <PhantomButton 
                 onClick={handleRequestRobux}
                 disabled={isOrdering}
-                className="w-full text-4xl py-8 shadow-[10px_10px_0px_0px_#FF0019] hover:shadow-[14px_14px_0px_0px_#FF0019]"
+                variant="primary"
+                className="w-full text-5xl py-10 shadow-[15px_15px_0px_0px_#FFFFFF] hover:shadow-[20px_20px_0px_0px_#FFFFFF] transition-all"
               >
-                {isOrdering ? "جاري المعالجة..." : "سرقة الروبوكس"}
+                {isOrdering ? "EXECUTING..." : "HEIST START"}
               </PhantomButton>
             </div>
 
-            <div className="bg-secondary p-6 border-4 border-black clip-path-comic-1 transform rotate-2">
-              <p className="text-xl text-black font-bold text-center tracking-tight uppercase italic">
-                Eventful days at School!
+            <div className="bg-white p-8 border-8 border-primary transform rotate-1 relative z-10">
+              <p className="text-2xl text-black font-black text-center tracking-tighter uppercase italic">
+                CAUTION: UNAUTHORIZED TRANSACTION IN PROGRESS
               </p>
             </div>
           </div>

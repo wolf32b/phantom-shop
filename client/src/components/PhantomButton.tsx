@@ -19,20 +19,20 @@ export function PhantomButton({
   const baseStyles = "relative px-8 py-3 font-display uppercase tracking-widest text-lg font-bold transform transition-all duration-200 group";
   
   const variants = {
-    primary: "bg-primary text-white hover:bg-secondary hover:text-black border-4 border-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]",
-    secondary: "bg-black text-white border-4 border-secondary hover:bg-secondary hover:text-black shadow-[6px_6px_0px_0px_rgba(255,0,25,1)]",
+    primary: "bg-primary text-white hover:bg-white hover:text-black border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]",
+    secondary: "bg-black text-white border-4 border-primary hover:bg-primary hover:text-white shadow-[6px_6px_0px_0px_rgba(255,255,255,1)]",
     danger: "bg-red-900 text-white border-4 border-red-500 hover:bg-red-600 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"
   };
 
   return (
     <motion.button
-      whileHover={{ scale: 1.05, rotate: -1, skewX: -12 }}
+      whileHover={{ scale: 1.05, rotate: -2, skewX: -12 }}
       whileTap={{ scale: 0.95 }}
       disabled={disabled || isLoading}
       className={cn(
         baseStyles, 
         variants[variant], 
-        "clip-path-p5-angle shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]",
+        "shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,0.2)]",
         (disabled || isLoading) && "opacity-50 cursor-not-allowed",
         className
       )}
