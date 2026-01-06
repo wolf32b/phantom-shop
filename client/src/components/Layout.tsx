@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useUser } from "@/hooks/use-user";
 import { motion } from "framer-motion";
 import { PhantomButton } from "./PhantomButton";
+import { Navbar } from "./Navbar";
 import { ShoppingBag, User, LogOut, Home, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 

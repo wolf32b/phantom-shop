@@ -1,4 +1,4 @@
-import { Product } from "@shared/schema";
+import { Order } from "@shared/schema";
 import { PhantomCard } from "./PhantomCard";
 import { PhantomButton } from "./PhantomButton";
 import { useCreateOrder } from "@/hooks/use-orders";
@@ -8,6 +8,16 @@ import { useState } from "react";
 import { useUser } from "@/hooks/use-user";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
+
+// We'll define a local type or use a generic if the Product type isn't exported directly
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  imageUrl: string;
+  category: string;
+}
 
 interface ProductCardProps {
   product: Product;

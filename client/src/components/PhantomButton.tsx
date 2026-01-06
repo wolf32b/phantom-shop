@@ -36,7 +36,7 @@ export function PhantomButton({
         (disabled || isLoading) && "opacity-50 cursor-not-allowed",
         className
       )}
-      {...props}
+      {...(props as any)}
     >
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-200%] animate-[shimmer_2s_infinite]" />
       <span className={cn("relative z-10 flex items-center justify-center gap-2", isLoading && "animate-pulse")}>
