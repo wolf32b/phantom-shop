@@ -1,87 +1,71 @@
-@import url('https://fonts.googleapis.com/css2?family=Anton&family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: 0 0% 8%;      /* Deep charcoal/black */
-  --foreground: 0 0% 95%;     /* Off-white */
+  --background: 0 0% 3%;       /* Pure rich black */
+  --foreground: 0 0% 98%;      /* Near white */
   
-  --primary: 353 100% 42%;    /* Persona 5 Crimson Red #d90018 */
-  --primary-foreground: 0 0% 100%;
+  --primary: 45 65% 52%;      /* Gold #D4AF37 */
+  --primary-foreground: 0 0% 0%;
   
-  --secondary: 0 0% 20%;      /* Gunmetal Grey */
-  --secondary-foreground: 0 0% 90%;
+  --secondary: 0 0% 12%;      /* Luxury dark charcoal */
+  --secondary-foreground: 45 65% 90%;
   
-  --muted: 0 0% 15%;
-  --muted-foreground: 0 0% 60%;
+  --muted: 0 0% 10%;
+  --muted-foreground: 0 0% 65%;
   
-  --accent: 0 0% 100%;        /* Stark White for sharp accents */
+  --accent: 45 65% 52%;       /* Gold accent */
   --accent-foreground: 0 0% 0%;
   
-  --destructive: 0 100% 50%;
+  --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;
   
-  --border: 0 0% 25%;
-  --input: 0 0% 20%;
-  --ring: 353 100% 42%;
+  --border: 0 0% 15%;
+  --input: 0 0% 12%;
+  --ring: 45 65% 52%;
 
-  --font-display: 'Anton', sans-serif;
-  --font-body: 'Roboto Condensed', sans-serif;
+  --font-display: 'Playfair Display', serif;
+  --font-body: 'Inter', sans-serif;
 }
 
 @layer base {
   body {
-    @apply bg-background text-foreground font-body overflow-x-hidden selection:bg-primary selection:text-white;
+    @apply bg-background text-foreground font-body overflow-x-hidden selection:bg-primary selection:text-black;
     background-image: 
-      radial-gradient(circle at 50% 50%, rgba(20, 20, 20, 0.8) 0%, rgba(0, 0, 0, 1) 100%),
-      repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.03) 0px, rgba(255, 255, 255, 0.03) 1px, transparent 1px, transparent 10px);
+      radial-gradient(circle at 50% 50%, rgba(20, 20, 20, 0.4) 0%, rgba(0, 0, 0, 1) 100%);
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display tracking-wider uppercase transform -skew-x-6;
+    @apply font-display tracking-tight;
   }
 }
 
 @layer utilities {
-  .clip-path-slant {
-    clip-path: polygon(5% 0, 100% 0, 100% 100%, 0% 100%);
+  .gold-gradient {
+    background: linear-gradient(135deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
   
-  .clip-path-jagged {
-    clip-path: polygon(
-      0% 0%, 
-      100% 0%, 
-      100% 85%, 
-      95% 100%, 
-      5% 100%, 
-      0% 85%
-    );
-  }
-
-  .clip-path-shard {
-    clip-path: polygon(
-      10% 0, 100% 0, 90% 100%, 0% 100%
-    );
-  }
-
-  .text-shadow-red {
-    text-shadow: 2px 2px 0px rgba(217, 0, 24, 0.5);
+  .premium-card {
+    @apply bg-secondary/50 border border-border hover:border-primary/50 transition-all duration-300 backdrop-blur-sm;
   }
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #1a1a1a;
+  background: #0a0a0a;
 }
 ::-webkit-scrollbar-thumb {
-  background: #d90018;
-  border-radius: 0;
+  background: #D4AF37;
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #ff001e;
+  background: #AA771C;
 }
