@@ -23,33 +23,33 @@ export function Navbar() {
     <motion.nav 
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className="sticky top-0 z-50 w-full bg-background border-b-8 border-secondary shadow-[0_10px_30px_rgba(255,0,25,0.4)] transition-colors duration-500"
+      className="sticky top-0 z-50 w-full bg-black border-b-8 border-primary shadow-[0_10px_40px_rgba(255,0,25,0.6)] transition-colors duration-500"
     >
-      <div className="h-2 w-full bg-primary halftone-pattern opacity-50" />
+      <div className="h-4 w-full bg-primary halftone-pattern" />
 
       <div className="container mx-auto px-4 h-24 flex items-center justify-between">
         <Link href="/" className="group flex items-center gap-3 cursor-pointer">
-          <div className="relative p-1 bg-white clip-path-comic-1 rotate-3 group-hover:rotate-0 transition-transform">
+          <div className="relative p-2 bg-white clip-path-comic-1 rotate-3 group-hover:rotate-0 transition-all duration-300 shadow-[4px_4px_0px_0px_rgba(255,0,25,1)]">
             <img 
               src={phantomLogo} 
               alt="Phantom Thieves Logo" 
               className="w-14 h-14 object-contain"
             />
           </div>
-          <span className="font-display text-3xl tracking-tighter text-foreground transform -skew-x-12 group-hover:text-primary transition-colors">
-            PHANTOM<span className="text-primary italic transition-colors">SHOP</span>
+          <span className="font-display text-4xl tracking-tighter text-white transform -skew-x-12 group-hover:text-primary transition-colors italic">
+            PHANTOM<span className="text-primary not-italic transition-colors">SHOP</span>
           </span>
         </Link>
 
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-6">
           {links.map((link) => (
             <Link key={link.href} href={link.href}>
               <div 
                 className={cn(
-                  "relative px-6 py-2 font-display text-2xl tracking-tighter cursor-pointer transition-all duration-300 transform",
+                  "relative px-8 py-3 font-display text-3xl tracking-tighter cursor-pointer transition-all duration-300 transform italic uppercase",
                   location === link.href 
-                    ? "bg-primary text-white -skew-x-12 scale-110 shadow-[6px_6px_0px_0px_white] dark:shadow-[6px_6px_0px_0px_black]" 
-                    : "text-foreground/70 hover:text-foreground hover:-skew-x-6"
+                    ? "bg-primary text-white -skew-x-12 scale-110 shadow-[8px_8px_0px_0px_white]" 
+                    : "text-white/80 hover:text-white hover:-skew-x-12 hover:bg-white/10"
                 )}
               >
                 {link.label}
