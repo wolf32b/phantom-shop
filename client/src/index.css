@@ -1,71 +1,101 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,400&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: 0 0% 3%;       /* Pure rich black */
-  --foreground: 0 0% 98%;      /* Near white */
+  --background: 0 0% 0%;       /* Pure black */
+  --foreground: 0 0% 95%;      /* Off-white */
   
-  --primary: 45 65% 52%;      /* Gold #D4AF37 */
+  --primary: 45 100% 50%;     /* Brilliant Gold #FFD700 */
   --primary-foreground: 0 0% 0%;
   
-  --secondary: 0 0% 12%;      /* Luxury dark charcoal */
-  --secondary-foreground: 45 65% 90%;
+  --secondary: 354 70% 47%;   /* Phantom Red #DC143C */
+  --secondary-foreground: 0 0% 100%;
   
   --muted: 0 0% 10%;
-  --muted-foreground: 0 0% 65%;
+  --muted-foreground: 0 0% 60%;
   
-  --accent: 45 65% 52%;       /* Gold accent */
+  --accent: 45 100% 50%;      /* Gold accent */
   --accent-foreground: 0 0% 0%;
   
-  --destructive: 0 84% 60%;
+  --destructive: 0 100% 50%;
   --destructive-foreground: 0 0% 100%;
   
-  --border: 0 0% 15%;
-  --input: 0 0% 12%;
-  --ring: 45 65% 52%;
+  --border: 0 0% 20%;
+  --input: 0 0% 10%;
+  --ring: 45 100% 50%;
 
-  --font-display: 'Playfair Display', serif;
-  --font-body: 'Inter', sans-serif;
+  --font-display: 'Oswald', sans-serif;
+  --font-body: 'Roboto Condensed', sans-serif;
 }
 
 @layer base {
   body {
     @apply bg-background text-foreground font-body overflow-x-hidden selection:bg-primary selection:text-black;
     background-image: 
-      radial-gradient(circle at 50% 50%, rgba(20, 20, 20, 0.4) 0%, rgba(0, 0, 0, 1) 100%);
+      radial-gradient(circle at 50% 50%, rgba(220, 20, 60, 0.1) 0%, rgba(0, 0, 0, 1) 100%),
+      repeating-linear-gradient(45deg, rgba(255, 215, 0, 0.02) 0px, rgba(255, 215, 0, 0.02) 1px, transparent 1px, transparent 10px);
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display tracking-tight;
+    @apply font-display tracking-tighter uppercase transform -skew-x-6;
   }
 }
 
 @layer utilities {
-  .gold-gradient {
-    background: linear-gradient(135deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+  .clip-path-p5-angle {
+    clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
   }
   
-  .premium-card {
-    @apply bg-secondary/50 border border-border hover:border-primary/50 transition-all duration-300 backdrop-blur-sm;
+  .halftone-pattern {
+    background-image: radial-gradient(circle, currentColor 1px, transparent 1px);
+    background-size: 4px 4px;
+  }
+
+  .gold-shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 215, 0, 0) 0%,
+      rgba(255, 215, 0, 0.8) 50%,
+      rgba(255, 215, 0, 0) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 3s infinite linear;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  .text-shadow-gold {
+    text-shadow: 3px 3px 0px rgba(0, 0, 0, 1), 5px 5px 0px rgba(255, 215, 0, 0.3);
+  }
+
+  .phantom-card {
+    @apply relative bg-black border-2 border-primary/50 overflow-visible;
+    clip-path: polygon(2% 0%, 100% 0%, 98% 100%, 0% 100%);
+  }
+
+  .phantom-card::before {
+    content: '';
+    @apply absolute -inset-0.5 bg-primary/20 -z-10 blur-sm opacity-0 hover:opacity-100 transition-opacity;
   }
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 12px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0a0a;
+  background: #000;
 }
 ::-webkit-scrollbar-thumb {
-  background: #D4AF37;
-  border-radius: 4px;
+  background: #FFD700;
+  border: 3px solid #000;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #AA771C;
+  background: #FFF;
 }
