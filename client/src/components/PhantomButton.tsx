@@ -32,7 +32,7 @@ export function PhantomButton({
       className={cn(
         baseStyles, 
         variants[variant], 
-        "clip-path-p5-angle shadow-[6px_6px_0px_0px_white]",
+        "clip-path-p5-angle shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]",
         (disabled || isLoading) && "opacity-50 cursor-not-allowed",
         className
       )}

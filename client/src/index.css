@@ -8,24 +8,24 @@
   --background: 0 0% 0%;       /* Pure black */
   --foreground: 0 0% 95%;      /* Off-white */
   
-  --primary: 354 70% 47%;     /* Phantom Red #DC143C */
-  --primary-foreground: 0 0% 100%;
+  --primary: 45 100% 50%;     /* Brilliant Gold #FFD700 */
+  --primary-foreground: 0 0% 0%;
   
-  --secondary: 0 0% 15%;      /* Dark Gray */
-  --secondary-foreground: 0 0% 90%;
+  --secondary: 354 70% 47%;   /* Phantom Red #DC143C */
+  --secondary-foreground: 0 0% 100%;
   
   --muted: 0 0% 10%;
   --muted-foreground: 0 0% 60%;
   
-  --accent: 354 70% 47%;      /* Red accent */
-  --accent-foreground: 0 0% 100%;
+  --accent: 45 100% 50%;      /* Gold accent */
+  --accent-foreground: 0 0% 0%;
   
   --destructive: 0 100% 50%;
   --destructive-foreground: 0 0% 100%;
   
   --border: 0 0% 20%;
   --input: 0 0% 10%;
-  --ring: 354 70% 47%;
+  --ring: 45 100% 50%;
 
   --font-display: 'Oswald', sans-serif;
   --font-body: 'Roboto Condensed', sans-serif;
@@ -33,9 +33,9 @@
 
 @layer base {
   body {
-    @apply bg-background text-foreground font-body overflow-x-hidden selection:bg-primary selection:text-white;
+    @apply bg-background text-foreground font-body overflow-x-hidden selection:bg-primary selection:text-black;
     background-image: 
-      radial-gradient(circle at 50% 50%, rgba(220, 20, 60, 0.1) 0%, rgba(0, 0, 0, 1) 100%),
+      radial-gradient(circle at 50% 50%, rgba(220, 20, 60, 0.15) 0%, rgba(0, 0, 0, 1) 100%),
       repeating-linear-gradient(45deg, rgba(220, 20, 60, 0.05) 0px, rgba(220, 20, 60, 0.05) 1px, transparent 1px, transparent 10px);
   }
 
@@ -66,16 +66,16 @@
     @apply border-4 border-white shadow-[8px_8px_0px_0px_rgba(220,20,60,1)];
   }
 
-  .comic-border-black {
-    @apply border-4 border-black shadow-[6px_6px_0px_0px_rgba(255,255,255,1)];
+  .comic-border-gold {
+    @apply border-4 border-primary shadow-[6px_6px_0px_0px_rgba(255,255,255,1)];
   }
 
-  .red-shimmer {
+  .gold-shimmer {
     background: linear-gradient(
       90deg,
-      rgba(220, 20, 60, 0) 0%,
-      rgba(220, 20, 60, 0.8) 50%,
-      rgba(220, 20, 60, 0) 100%
+      rgba(255, 215, 0, 0) 0%,
+      rgba(255, 215, 0, 0.8) 50%,
+      rgba(255, 215, 0, 0) 100%
     );
     background-size: 200% 100%;
     animation: shimmer 3s infinite linear;
@@ -86,19 +86,19 @@
     100% { background-position: 200% 0; }
   }
 
-  .text-shadow-red {
-    text-shadow: 4px 4px 0px rgba(0, 0, 0, 1), 7px 7px 0px rgba(220, 20, 60, 0.5);
+  .text-shadow-gold {
+    text-shadow: 4px 4px 0px rgba(0, 0, 0, 1), 7px 7px 0px rgba(255, 215, 0, 0.5);
   }
 
   .phantom-card {
-    @apply relative bg-black border-4 border-white overflow-visible transition-transform duration-200;
+    @apply relative bg-black border-4 border-primary overflow-visible transition-transform duration-200;
     clip-path: polygon(0% 5%, 98% 0%, 100% 95%, 2% 100%);
-    box-shadow: 12px 12px 0px 0px #DC143C;
+    box-shadow: 12px 12px 0px 0px #000;
   }
 
   .phantom-card:hover {
     transform: translate(-4px, -4px);
-    box-shadow: 16px 16px 0px 0px #DC143C;
+    box-shadow: 16px 16px 0px 0px #000;
   }
 
   .phantom-card::before {

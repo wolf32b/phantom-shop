@@ -68,7 +68,7 @@ export default function Shop() {
     <div className="container mx-auto px-4 py-12 text-right" dir="rtl">
       <div className="mb-16 relative">
         <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary clip-path-comic-1 rotate-12 opacity-20 halftone-pattern" />
-        <h2 className="text-6xl font-display text-white mb-6 text-shadow-red transform -skew-x-12">إجمالي الروبوكس المتاح</h2>
+        <h2 className="text-6xl font-display text-white mb-6 text-shadow-gold transform -skew-x-12">إجمالي الروبوكس المتاح</h2>
         <PhantomCounter value={stats?.value || 0} />
       </div>
 
@@ -77,8 +77,8 @@ export default function Shop() {
         <PhantomCard delay={0.1}>
           <div className="space-y-8 p-10">
             <div className="text-center relative">
-              <div className="absolute -top-4 -left-4 text-white text-6xl font-display opacity-10">01</div>
-              <h3 className="text-5xl font-display text-white mb-4 red-shimmer tracking-tighter">
+              <div className="absolute -top-4 -left-4 text-white text-6xl font-display opacity-10 italic">STUDENT & THIEF</div>
+              <h3 className="text-5xl font-display text-white mb-4 gold-shimmer tracking-tighter">
                 اطلب الروبوكس الخاص بك
               </h3>
               <p className="text-white/80 font-body text-xl italic">
@@ -88,13 +88,13 @@ export default function Shop() {
 
             <div className="space-y-6">
               <div className="relative group">
-                <div className="absolute -inset-2 bg-white/10 clip-path-comic-1 transition-all group-focus-within:bg-primary/20" />
+                <div className="absolute -inset-2 bg-primary/10 clip-path-comic-1 transition-all group-focus-within:bg-primary/30" />
                 <input
                   type="number"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   placeholder="000"
-                  className="w-full bg-black border-4 border-white p-6 text-6xl text-center text-primary font-display focus:shadow-[0_0_20px_rgba(220,20,60,0.5)] focus:outline-none transition-all relative z-10"
+                  className="w-full bg-black border-4 border-primary p-6 text-6xl text-center text-primary font-display focus:shadow-[0_0_20px_rgba(255,215,0,0.5)] focus:outline-none transition-all relative z-10"
                 />
                 <div className="absolute right-6 top-1/2 -translate-y-1/2 text-4xl text-white font-display z-10">
                   R$
@@ -104,15 +104,15 @@ export default function Shop() {
               <PhantomButton 
                 onClick={handleRequestRobux}
                 disabled={isOrdering}
-                className="w-full text-4xl py-8 shadow-[10px_10px_0px_0px_white] hover:shadow-[14px_14px_0px_0px_white]"
+                className="w-full text-4xl py-8 shadow-[10px_10px_0px_0px_#000] hover:shadow-[14px_14px_0px_0px_#000]"
               >
                 {isOrdering ? "جاري المعالجة..." : "سرقة الروبوكس"}
               </PhantomButton>
             </div>
 
-            <div className="bg-white p-6 border-4 border-black clip-path-comic-1 transform rotate-1">
-              <p className="text-lg text-black font-bold text-center tracking-tight">
-                المبلغ المطلوب يجب أن يكون متاحاً في الخزنة العامة
+            <div className="bg-primary p-6 border-4 border-black clip-path-comic-1 transform rotate-1">
+              <p className="text-lg text-black font-bold text-center tracking-tight uppercase">
+                Eventful days at School!
               </p>
             </div>
           </div>

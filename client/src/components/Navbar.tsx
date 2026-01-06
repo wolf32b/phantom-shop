@@ -19,7 +19,7 @@ export function Navbar() {
     <motion.nav 
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className="sticky top-0 z-50 w-full bg-black border-b-8 border-primary shadow-[0_10px_30px_rgba(220,20,60,0.3)]"
+      className="sticky top-0 z-50 w-full bg-black border-b-8 border-primary shadow-[0_10px_30px_rgba(255,215,0,0.2)]"
     >
       <div className="h-2 w-full bg-primary halftone-pattern opacity-50" />
 
@@ -44,7 +44,7 @@ export function Navbar() {
                 className={cn(
                   "relative px-6 py-2 font-display text-2xl tracking-tighter cursor-pointer transition-all duration-300 transform",
                   location === link.href 
-                    ? "bg-primary text-white -skew-x-12 scale-110 shadow-[6px_6px_0px_0px_white]" 
+                    ? "bg-primary text-black -skew-x-12 scale-110 shadow-[6px_6px_0px_0px_white]" 
                     : "text-white/70 hover:text-white hover:-skew-x-6"
                 )}
               >
@@ -56,20 +56,20 @@ export function Navbar() {
 
         <div className="flex items-center gap-4">
           {user ? (
-            <div className="flex items-center gap-4 bg-white p-1 clip-path-comic-2 shadow-[4px_4px_0px_0px_#DC143C]">
+            <div className="flex items-center gap-4 bg-white p-1 clip-path-comic-2 shadow-[4px_4px_0px_0px_#FFD700]">
               <div className="text-right px-2">
                 <p className="text-[10px] text-black/50 font-bold uppercase leading-none">Codename</p>
                 <p className="font-display text-xl leading-none text-black tracking-tighter">{user.username}</p>
               </div>
               <img 
-                src={user.profileImageUrl || `https://ui-avatars.com/api/?name=${user.username}&background=d90018&color=fff`} 
+                src={user.profileImageUrl || `https://ui-avatars.com/api/?name=${user.username}&background=FFD700&color=000`} 
                 alt="Profile" 
                 className="w-12 h-12 border-4 border-black"
               />
             </div>
           ) : (
             <Link href="/login">
-              <div className="px-8 py-2 bg-white text-black font-display text-2xl hover:bg-primary hover:text-white transition-all cursor-pointer clip-path-p5-angle shadow-[6px_6px_0px_0px_#DC143C]">
+              <div className="px-8 py-2 bg-white text-black font-display text-2xl hover:bg-primary hover:text-white transition-all cursor-pointer clip-path-p5-angle shadow-[6px_6px_0px_0px_#FFD700]">
                 LOGIN
               </div>
             </Link>
