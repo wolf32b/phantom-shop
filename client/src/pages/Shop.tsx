@@ -75,7 +75,7 @@ export default function Shop() {
         <PhantomCard delay={0.1}>
           <div className="space-y-8 p-6">
             <div className="text-center">
-              <h3 className="text-3xl font-display text-white mb-2 gold-shimmer">
+              <h3 className="text-3xl font-display text-white mb-2 red-shimmer">
                 اطلب الروبوكس الخاص بك
               </h3>
               <p className="text-white/60 font-body">
