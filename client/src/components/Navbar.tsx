@@ -19,39 +19,37 @@ export function Navbar() {
     <motion.nav 
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className="sticky top-0 z-50 w-full bg-black/95 border-b-4 border-primary shadow-2xl backdrop-blur-sm"
+      className="sticky top-0 z-50 w-full bg-black border-b-8 border-primary shadow-[0_10px_30px_rgba(220,20,60,0.3)]"
     >
-      {/* Decorative top strip */}
-      <div className="h-1 w-full bg-gradient-to-r from-black via-primary to-black" />
+      {/* Decorative top strip with comic patterns */}
+      <div className="h-2 w-full bg-primary halftone-pattern opacity-50" />
 
-      <div className="container mx-auto px-4 h-20 flex items-center justify-between">
-        <Link href="/" className="group flex items-center gap-2 cursor-pointer">
-          <img 
-            src={phantomLogo} 
-            alt="Phantom Thieves Logo" 
-            className="w-12 h-12 object-contain group-hover:scale-110 transition-transform duration-300"
-          />
-          <span className="font-display text-2xl tracking-widest text-white group-hover:text-primary transition-colors">
-            PHANTOM<span className="text-primary">SHOP</span>
+      <div className="container mx-auto px-4 h-24 flex items-center justify-between">
+        <Link href="/" className="group flex items-center gap-3 cursor-pointer">
+          <div className="relative p-1 bg-white clip-path-comic-1 rotate-3 group-hover:rotate-0 transition-transform">
+            <img 
+              src={phantomLogo} 
+              alt="Phantom Thieves Logo" 
+              className="w-14 h-14 object-contain"
+            />
+          </div>
+          <span className="font-display text-3xl tracking-tighter text-white transform -skew-x-12 group-hover:text-primary transition-colors">
+            PHANTOM<span className="text-primary italic">SHOP</span>
           </span>
         </Link>
 
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-4">
           {links.map((link) => (
             <Link key={link.href} href={link.href}>
               <div 
                 className={cn(
-                  "relative px-4 py-2 font-display text-xl tracking-wider cursor-pointer transition-all duration-300 transform hover:-skew-x-12 hover:scale-110",
-                  location === link.href ? "text-primary scale-110 -skew-x-12" : "text-white/70 hover:text-white"
+                  "relative px-6 py-2 font-display text-2xl tracking-tighter cursor-pointer transition-all duration-300 transform",
+                  location === link.href 
+                    ? "bg-primary text-white -skew-x-12 scale-110 shadow-[6px_6px_0px_0px_white]" 
+                    : "text-white/70 hover:text-white hover:-skew-x-6"
                 )}
               >
                 {link.label}
-                {location === link.href && (
-                  <motion.div 
-                    layoutId="underline"
-                    className="absolute bottom-0 left-0 w-full h-1 bg-primary"
-                  />
-                )}
               </div>
             </Link>
           ))}
@@ -59,20 +57,20 @@ export function Navbar() {
 
         <div className="flex items-center gap-4">
           {user ? (
-            <div className="flex items-center gap-4 bg-white/5 px-4 py-1 rounded-sm border-l-2 border-primary transform skew-x-6">
-              <div className="text-right transform -skew-x-6">
-                <p className="text-xs text-muted-foreground uppercase">Codename</p>
-                <p className="font-display text-lg leading-none text-white">{user.username}</p>
+            <div className="flex items-center gap-4 bg-white p-1 clip-path-comic-2 shadow-[4px_4px_0px_0px_#DC143C]">
+              <div className="text-right px-2">
+                <p className="text-[10px] text-black/50 font-bold uppercase leading-none">Codename</p>
+                <p className="font-display text-xl leading-none text-black tracking-tighter">{user.username}</p>
               </div>
               <img 
                 src={user.profileImageUrl || `https://ui-avatars.com/api/?name=${user.username}&background=d90018&color=fff`} 
                 alt="Profile" 
-                className="w-10 h-10 border-2 border-white transform -skew-x-6"
+                className="w-12 h-12 border-4 border-black"
               />
             </div>
           ) : (
             <Link href="/login">
-              <div className="px-6 py-2 bg-white text-black font-display text-lg hover:bg-primary hover:text-white transition-colors cursor-pointer clip-path-slant">
+              <div className="px-8 py-2 bg-white text-black font-display text-2xl hover:bg-primary hover:text-white transition-all cursor-pointer clip-path-p5-angle shadow-[6px_6px_0px_0px_#DC143C]">
                 LOGIN
               </div>
             </Link>

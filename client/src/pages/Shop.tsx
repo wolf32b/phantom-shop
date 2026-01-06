@@ -66,33 +66,37 @@ export default function Shop() {
 
   return (
     <div className="container mx-auto px-4 py-12 text-right" dir="rtl">
-      <div className="mb-16">
-        <h2 className="text-4xl font-display text-primary mb-4">إجمالي الروبوكس المتاح</h2>
+      <div className="mb-16 relative">
+        <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary clip-path-comic-1 rotate-12 opacity-20 halftone-pattern" />
+        <h2 className="text-6xl font-display text-white mb-6 text-shadow-red transform -skew-x-12">إجمالي الروبوكس المتاح</h2>
         <PhantomCounter value={stats?.value || 0} />
       </div>
 
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-2xl mx-auto relative">
+        <div className="absolute -inset-4 bg-primary/20 clip-path-comic-2 -z-10 halftone-pattern" />
         <PhantomCard delay={0.1}>
-          <div className="space-y-8 p-6">
-            <div className="text-center">
-              <h3 className="text-3xl font-display text-white mb-2 red-shimmer">
+          <div className="space-y-8 p-10">
+            <div className="text-center relative">
+              <div className="absolute -top-4 -left-4 text-white text-6xl font-display opacity-10">01</div>
+              <h3 className="text-5xl font-display text-white mb-4 red-shimmer tracking-tighter">
                 اطلب الروبوكس الخاص بك
               </h3>
-              <p className="text-white/60 font-body">
+              <p className="text-white/80 font-body text-xl italic">
                 أدخل كمية الروبوكس التي تريد تحويلها إلى حسابك في روبلوكس
               </p>
             </div>
 
-            <div className="space-y-4">
-              <div className="relative">
+            <div className="space-y-6">
+              <div className="relative group">
+                <div className="absolute -inset-2 bg-white/10 clip-path-comic-1 transition-all group-focus-within:bg-primary/20" />
                 <input
                   type="number"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
-                  placeholder="0"
-                  className="w-full bg-black border-2 border-primary/30 p-4 text-4xl text-center text-primary font-display focus:border-primary focus:outline-none transition-colors"
+                  placeholder="000"
+                  className="w-full bg-black border-4 border-white p-6 text-6xl text-center text-primary font-display focus:shadow-[0_0_20px_rgba(220,20,60,0.5)] focus:outline-none transition-all relative z-10"
                 />
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl text-primary/50 font-display">
+                <div className="absolute right-6 top-1/2 -translate-y-1/2 text-4xl text-white font-display z-10">
                   R$
                 </div>
               </div>
@@ -100,15 +104,15 @@ export default function Shop() {
               <PhantomButton 
                 onClick={handleRequestRobux}
                 disabled={isOrdering}
-                className="w-full text-2xl h-16"
+                className="w-full text-4xl py-8 shadow-[10px_10px_0px_0px_white] hover:shadow-[14px_14px_0px_0px_white]"
               >
                 {isOrdering ? "جاري المعالجة..." : "سرقة الروبوكس"}
               </PhantomButton>
             </div>
 
-            <div className="bg-primary/5 p-4 border border-primary/20 text-center">
-              <p className="text-sm text-primary/80">
-                ملاحظة: يمكنك طلب أي مبلغ طالما أنه أقل من الروبوكس المتاح في الخزنة العامة.
+            <div className="bg-white p-6 border-4 border-black clip-path-comic-1 transform rotate-1">
+              <p className="text-lg text-black font-bold text-center tracking-tight">
+                المبلغ المطلوب يجب أن يكون متاحاً في الخزنة العامة
               </p>
             </div>
           </div>
