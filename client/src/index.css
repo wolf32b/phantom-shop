@@ -5,38 +5,56 @@
 @tailwind utilities;
 
 :root {
-  --background: 0 0% 0%;       /* Pure black */
-  --foreground: 0 0% 95%;      /* Off-white */
+  --background: 0 0% 98%;       /* Soft white */
+  --foreground: 0 0% 0%;         /* Black */
   
-  --primary: 354 100% 50%;    /* Bright Blood Red #FF0019 */
+  --primary: 354 100% 50%;     /* Bright Blood Red #FF0019 */
   --primary-foreground: 0 0% 100%;
   
-  --secondary: 45 100% 50%;   /* Brilliant Gold #FFD700 */
-  --secondary-foreground: 0 0% 0%;
+  --secondary: 0 0% 0%;        /* Black for B&W style */
+  --secondary-foreground: 0 0% 100%;
   
-  --muted: 0 0% 10%;
-  --muted-foreground: 0 0% 60%;
+  --muted: 0 0% 90%;
+  --muted-foreground: 0 0% 40%;
   
-  --accent: 45 100% 50%;      /* Gold accent */
-  --accent-foreground: 0 0% 0%;
+  --accent: 354 100% 50%;      /* Red accent */
+  --accent-foreground: 0 0% 100%;
   
-  --destructive: 0 100% 50%;
-  --destructive-foreground: 0 0% 100%;
-  
-  --border: 0 0% 20%;
-  --input: 0 0% 10%;
-  --ring: 45 100% 50%;
+  --border: 0 0% 80%;
+  --input: 0 0% 95%;
+  --ring: 354 100% 50%;
 
   --font-display: 'Oswald', sans-serif;
   --font-body: 'Roboto Condensed', sans-serif;
 }
 
+.dark {
+  --background: 0 0% 5%;        /* Less dark than pure black */
+  --foreground: 0 0% 95%;       /* Off-white */
+  
+  --primary: 354 100% 50%;     /* Bright Blood Red #FF0019 */
+  --primary-foreground: 0 0% 100%;
+  
+  --secondary: 45 100% 50%;    /* Brilliant Gold #FFD700 */
+  --secondary-foreground: 0 0% 0%;
+  
+  --muted: 0 0% 12%;
+  --muted-foreground: 0 0% 60%;
+  
+  --accent: 45 100% 50%;       /* Gold accent */
+  --accent-foreground: 0 0% 0%;
+  
+  --border: 0 0% 20%;
+  --input: 0 0% 12%;
+  --ring: 45 100% 50%;
+}
+
 @layer base {
   body {
-    @apply bg-background text-foreground font-body overflow-x-hidden selection:bg-primary selection:text-white;
+    @apply bg-background text-foreground font-body overflow-x-hidden selection:bg-primary selection:text-white transition-colors duration-500;
     background-image: 
-      radial-gradient(circle at 50% 50%, rgba(255, 0, 25, 0.2) 0%, rgba(0, 0, 0, 1) 100%),
-      repeating-linear-gradient(45deg, rgba(255, 215, 0, 0.03) 0px, rgba(255, 215, 0, 0.03) 1px, transparent 1px, transparent 10px);
+      radial-gradient(circle at 50% 50%, hsla(var(--primary) / 0.05) 0%, transparent 100%),
+      repeating-linear-gradient(45deg, hsla(var(--foreground) / 0.02) 0px, hsla(var(--foreground) / 0.02) 1px, transparent 1px, transparent 10px);
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -82,12 +100,22 @@
     100% { background-position: 200% 0; }
   }
 
+  @keyframes spark-fade {
+    0% { opacity: 0; transform: scale(0.5) rotate(45deg); }
+    20% { opacity: 1; transform: scale(1) rotate(45deg); }
+    100% { opacity: 0; transform: scale(1.5) rotate(45deg); }
+  }
+
+  .animate-spark-fade {
+    animation: spark-fade 1.5s ease-out forwards;
+  }
+
   .text-shadow-blood {
     text-shadow: 4px 4px 0px rgba(0, 0, 0, 1), 7px 7px 0px rgba(255, 0, 25, 0.6);
   }
 
   .phantom-card {
-    @apply relative bg-black border-4 border-secondary overflow-visible transition-transform duration-200;
+    @apply relative bg-card border-4 border-secondary overflow-visible transition-transform duration-200;
     clip-path: polygon(0% 5%, 98% 0%, 100% 95%, 2% 100%);
     box-shadow: 12px 12px 0px 0px #FF0019;
   }
@@ -108,12 +136,12 @@
   width: 12px;
 }
 ::-webkit-scrollbar-track {
-  background: #000;
+  background: hsl(var(--background));
 }
 ::-webkit-scrollbar-thumb {
-  background: #FF0019;
-  border: 3px solid #000;
+  background: hsl(var(--primary));
+  border: 3px solid hsl(var(--background));
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #FFD700;
+  background: hsl(var(--secondary));
 }
