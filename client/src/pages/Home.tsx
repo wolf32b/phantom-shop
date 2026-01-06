@@ -32,10 +32,10 @@ export default function Home() {
           className="mb-8"
         >
           <div className="inline-block bg-primary text-white font-display text-xl px-4 py-1 transform -rotate-2 mb-4">
-            WELCOME TO THE HIDEOUT
+            مرحبًا بك في متجر الفانتومز.
           </div>
           <h1 className="text-7xl md:text-9xl font-display text-white mb-2 leading-[0.85] text-shadow-red">
-            PHANTOM<br /><span className="text-transparent bg-clip-text bg-gradient-to-br from-primary to-red-800">THIEVES</span>
+            PHANTOM<br /><span className="text-transparent bg-clip-text bg-gradient-to-br from-primary to-red-800">SHOP</span>
           </h1>
         </motion.div>
 
@@ -45,7 +45,7 @@ export default function Home() {
           transition={{ delay: 0.4 }}
           className="text-xl md:text-2xl text-white/80 font-body tracking-wider mb-12 max-w-2xl mx-auto bg-black/50 p-4 border-l-4 border-primary backdrop-blur-sm"
         >
-          {user ? `Welcome back, Joker. Ready for your next heist?` : "The world is rotten. Steal the treasure and take back your future."}
+          {user ? `اول موقع لبيع الروبوكس عربيًا.` : "The world is rotten. Steal the treasure and take back your future."}
         </motion.p>
 
         <motion.div
@@ -56,14 +56,14 @@ export default function Home() {
         >
           <Link href="/shop">
             <PhantomButton className="text-2xl px-12 py-6">
-              ENTER BLACK MARKET
+              تصفح المتجر
             </PhantomButton>
           </Link>
           
           {!user && (
             <Link href="/login">
               <PhantomButton variant="secondary" className="text-2xl px-12 py-6">
-                JOIN THE ALLIANCE
+                التسجيل كـ فانتوم
               </PhantomButton>
             </Link>
           )}
