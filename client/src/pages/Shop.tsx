@@ -1,42 +1,62 @@
 import { PhantomCard } from "@/components/PhantomCard";
 import { PhantomButton } from "@/components/PhantomButton";
 import { PhantomCounter } from "@/components/PhantomCounter";
-import { useProducts } from "@/hooks/use-products";
 import { useCreateOrder } from "@/hooks/use-orders";
 import { useRobuxCounter } from "@/hooks/use-stats";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
-import { Loader2 } from "lucide-react";
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { queryClient } from "@/lib/queryClient";
 
 export default function Shop() {
-  const { data: products, isLoading } = useProducts();
   const { data: stats } = useRobuxCounter();
   const { mutate: createOrder, isPending: isOrdering } = useCreateOrder();
   const { toast } = useToast();
   const { data: user } = useUser();
+  const [amount, setAmount] = useState<string>("");
 
-  const handleSteal = (productId: number, productName: string) => {
+  const handleRequestRobux = () => {
     if (!user) {
       toast({
-        title: "ACCESS DENIED",
-        description: "You must be a member of the Phantom Thieves to steal items.",
+        title: "تم رفض الوصول",
+        description: "يجب أن تكون عضواً في لصوص الفانتوم للحصول على الروبوكس.",
         variant: "destructive",
       });
       return;
     }
 
-    createOrder(productId, {
+    const robuxAmount = parseInt(amount);
+    if (isNaN(robuxAmount) || robuxAmount <= 0) {
+      toast({
+        title: "خطأ",
+        description: "يرجى إدخال مبلغ صحيح.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (robuxAmount > (stats?.value || 0)) {
+      toast({
+        title: "عملية فاشلة",
+        description: "المبلغ المطلوب يتجاوز الروبوكس المتاح في الخزنة!",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    createOrder(robuxAmount, {
       onSuccess: () => {
         toast({
-          title: "HEIST SUCCESSFUL",
-          description: `You successfully stole ${productName}!`,
+          title: "تمت العملية بنجاح",
+          description: `لقد حصلت على ${robuxAmount} روبوكس بنجاح!`,
           className: "bg-black border-2 border-primary text-white font-display",
         });
+        setAmount("");
+        queryClient.invalidateQueries({ queryKey: ["/api/stats/robux"] });
       },
       onError: (error) => {
         toast({
-          title: "HEIST FAILED",
+          title: "فشلت العملية",
           description: error.message,
           variant: "destructive",
         });
@@ -44,60 +64,55 @@ export default function Shop() {
     });
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-16 h-16 text-primary animate-spin" />
-      </div>
-    );
-  }
-
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container mx-auto px-4 py-12 text-right" dir="rtl">
       <div className="mb-16">
+        <h2 className="text-4xl font-display text-primary mb-4">إجمالي الروبوكس المتاح</h2>
         <PhantomCounter value={stats?.value || 0} />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-        {products?.map((product, index) => (
-          <PhantomCard key={product.id} delay={index * 0.1}>
-            <div className="aspect-square w-full mb-4 overflow-hidden border-2 border-white/10 relative group-hover:border-primary/50 transition-colors">
-              <img 
-                src={product.imageUrl} 
-                alt={product.name}
-                className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-              />
-              <div className="absolute top-2 right-2 bg-black/80 px-2 py-1 border border-primary text-primary font-display text-sm tracking-wider">
-                {product.category}
-              </div>
+      <div className="max-w-2xl mx-auto">
+        <PhantomCard delay={0.1}>
+          <div className="space-y-8 p-6">
+            <div className="text-center">
+              <h3 className="text-3xl font-display text-white mb-2 gold-shimmer">
+                اطلب الروبوكس الخاص بك
+              </h3>
+              <p className="text-white/60 font-body">
+                أدخل كمية الروبوكس التي تريد تحويلها إلى حسابك في روبلوكس
+              </p>
             </div>
 
             <div className="space-y-4">
-              <div>
-                <h3 className="text-2xl font-display text-white mb-1 group-hover:text-primary transition-colors">
-                  {product.name}
-                </h3>
-                <p className="text-white/60 font-body text-sm line-clamp-2">
-                  {product.description}
-                </p>
-              </div>
-
-              <div className="flex items-end justify-between border-t border-white/10 pt-4">
-                <div className="font-display text-3xl text-white">
-                  R$ <span className="text-primary">{product.price}</span>
+              <div className="relative">
+                <input
+                  type="number"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  placeholder="0"
+                  className="w-full bg-black border-2 border-primary/30 p-4 text-4xl text-center text-primary font-display focus:border-primary focus:outline-none transition-colors"
+                />
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl text-primary/50 font-display">
+                  R$
                 </div>
               </div>
 
               <PhantomButton 
-                onClick={() => handleSteal(product.id, product.name)}
+                onClick={handleRequestRobux}
                 disabled={isOrdering}
-                className="w-full text-xl"
+                className="w-full text-2xl h-16"
               >
-                STEAL IT
+                {isOrdering ? "جاري المعالجة..." : "سرقة الروبوكس"}
               </PhantomButton>
             </div>
-          </PhantomCard>
-        ))}
+
+            <div className="bg-primary/5 p-4 border border-primary/20 text-center">
+              <p className="text-sm text-primary/80">
+                ملاحظة: يمكنك طلب أي مبلغ طالما أنه أقل من الروبوكس المتاح في الخزنة العامة.
+              </p>
+            </div>
+          </div>
+        </PhantomCard>
       </div>
     </div>
   );
