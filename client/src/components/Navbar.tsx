@@ -21,7 +21,6 @@ export function Navbar() {
       animate={{ y: 0 }}
       className="sticky top-0 z-50 w-full bg-black border-b-8 border-primary shadow-[0_10px_30px_rgba(220,20,60,0.3)]"
     >
-      {/* Decorative top strip with comic patterns */}
       <div className="h-2 w-full bg-primary halftone-pattern opacity-50" />
 
       <div className="container mx-auto px-4 h-24 flex items-center justify-between">
