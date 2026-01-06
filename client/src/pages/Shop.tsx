@@ -68,7 +68,7 @@ export default function Shop() {
     <div className="container mx-auto px-4 py-12 text-right" dir="rtl">
       <div className="mb-16 relative">
         <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary clip-path-comic-1 rotate-12 opacity-30 halftone-pattern" />
-        <h2 className="text-6xl font-display text-white mb-6 text-shadow-blood transform -skew-x-12 italic">إجمالي الروبوكس المتاح</h2>
+        <h2 className="text-6xl font-display text-white mb-6 text-shadow-blood transform -skew-x-12 italic"></h2>
         <PhantomCounter value={stats?.value || 0} />
       </div>
 
