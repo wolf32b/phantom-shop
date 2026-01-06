@@ -46,10 +46,10 @@ export function SparkBackground() {
 export function PhantomShapes() {
   return (
     <div className="fixed inset-0 pointer-events-none z-0 opacity-10 dark:opacity-5 overflow-hidden">
-      <div className="absolute top-10 -left-20 w-96 h-96 bg-primary rotate-12 clip-path-p5-angle" />
-      <div className="absolute bottom-40 -right-20 w-80 h-80 bg-secondary -rotate-12 clip-path-comic-1" />
-      <div className="absolute top-1/2 left-1/4 w-64 h-64 border-8 border-primary rotate-45 opacity-20" />
-      <div className="absolute top-1/3 right-1/4 w-48 h-48 bg-white/5 clip-path-comic-2" />
+      <div className="absolute top-10 -left-20 w-96 h-96 bg-primary rotate-12 clip-path-p5-angle transition-colors duration-500" />
+      <div className="absolute bottom-40 -right-20 w-80 h-80 bg-secondary -rotate-12 clip-path-comic-1 transition-colors duration-500" />
+      <div className="absolute top-1/2 left-1/4 w-64 h-64 border-8 border-primary rotate-45 opacity-20 transition-colors duration-500" />
+      <div className="absolute top-1/3 right-1/4 w-48 h-48 bg-foreground/5 clip-path-comic-2" />
     </div>
   );
 }

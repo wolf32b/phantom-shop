@@ -37,7 +37,7 @@ export function Navbar() {
             />
           </div>
           <span className="font-display text-3xl tracking-tighter text-foreground transform -skew-x-12 group-hover:text-primary transition-colors">
-            PHANTOM<span className="text-primary italic">SHOP</span>
+            PHANTOM<span className="text-primary italic transition-colors">SHOP</span>
           </span>
         </Link>
 
