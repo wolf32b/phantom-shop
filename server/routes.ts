@@ -4,11 +4,93 @@ import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
 import { setupAuth } from "./replit_integrations/auth";
+import { hashPassword, verifyPassword } from "./auth-utils";
+import { db } from "./db";
+import { users } from "@shared/schema";
+import { eq } from "drizzle-orm";
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  // Custom Auth Routes
+  app.post("/api/auth/register", async (req, res) => {
+    try {
+      const { username, email, password } = req.body;
+
+      if (!username || !email || !password) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+
+      // Check if username exists
+      const existingUser = await db.select().from(users).where(eq(users.username, username)).limit(1);
+      if (existingUser.length > 0) {
+        return res.status(409).json({ message: "Username already taken" });
+      }
+
+      // Check if email exists
+      const existingEmail = await db.select().from(users).where(eq(users.email, email)).limit(1);
+      if (existingEmail.length > 0) {
+        return res.status(409).json({ message: "Email already registered" });
+      }
+
+      const passwordHash = await hashPassword(password);
+      const newUser = await db.insert(users).values({
+        username,
+        email,
+        passwordHash,
+        robuxBalance: 0,
+        isAdmin: false,
+      }).returning();
+
+      // Log them in
+      req.logIn(newUser[0], (err) => {
+        if (err) {
+          return res.status(500).json({ message: "Login after registration failed" });
+        }
+        res.status(201).json({ success: true, user: newUser[0] });
+      });
+    } catch (error) {
+      console.error("Register error:", error);
+      res.status(500).json({ message: "Registration failed" });
+    }
+  });
+
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+
+      if (!username || !password) {
+        return res.status(400).json({ message: "Missing username or password" });
+      }
+
+      const user = await db.select().from(users).where(eq(users.username, username)).limit(1);
+      if (user.length === 0) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+
+      const passwordHash = user[0].passwordHash;
+      if (!passwordHash) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+
+      const isValid = await verifyPassword(password, passwordHash);
+      if (!isValid) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+
+      req.logIn(user[0], (err) => {
+        if (err) {
+          return res.status(500).json({ message: "Login failed" });
+        }
+        res.json({ success: true, user: user[0] });
+      });
+    } catch (error) {
+      console.error("Login error:", error);
+      res.status(500).json({ message: "Login failed" });
+    }
+  });
+
   // Set up Replit Auth
   await setupAuth(app);
 
