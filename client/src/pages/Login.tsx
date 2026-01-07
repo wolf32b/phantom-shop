@@ -1,19 +1,24 @@
 import { motion } from "framer-motion";
 import { PhantomButton } from "@/components/PhantomButton";
+import { VerifyEmail } from "./VerifyEmail";
 import { useEffect, useState } from "react";
 import { useUser } from "@/hooks/use-user";
 import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 
+type AuthStep = "login" | "register" | "verify-email";
+
 export default function Login() {
   const { data: user } = useUser();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const [isLogin, setIsLogin] = useState(true);
+  const [step, setStep] = useState<AuthStep>("login");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [pendingUserId, setPendingUserId] = useState("");
+  const [pendingEmail, setPendingEmail] = useState("");
 
   useEffect(() => {
     if (user) {
@@ -26,36 +31,59 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      const endpoint = isLogin ? "/api/auth/login" : "/api/auth/register";
-      const body = isLogin 
-        ? { username, password }
-        : { username, email, password };
-
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        toast({
-          title: "ERROR",
-          description: data.message || "Authentication failed",
-          variant: "destructive",
+      if (step === "login") {
+        const response = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
         });
-        return;
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          toast({
+            title: "ERROR",
+            description: data.message || "Authentication failed",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        toast({
+          title: "SUCCESS",
+          description: "Welcome back!",
+          className: "bg-black border-2 border-primary text-white font-display",
+        });
+
+        setTimeout(() => setLocation("/"), 500);
+      } else if (step === "register") {
+        const response = await fetch("/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, email, password }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          toast({
+            title: "ERROR",
+            description: data.message || "Registration failed",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        toast({
+          title: "VERIFICATION CODE SENT",
+          description: "Check your email for the verification code",
+          className: "bg-black border-2 border-primary text-white font-display",
+        });
+
+        setPendingUserId(data.userId);
+        setPendingEmail(data.email);
+        setStep("verify-email");
       }
-
-      toast({
-        title: "SUCCESS",
-        description: isLogin ? "Welcome back!" : "Account created successfully!",
-        className: "bg-black border-2 border-primary text-white font-display",
-      });
-
-      // Redirect to home
-      setTimeout(() => setLocation("/"), 500);
     } catch (error) {
       toast({
         title: "ERROR",
@@ -67,6 +95,25 @@ export default function Login() {
     }
   };
 
+  if (step === "verify-email") {
+    return (
+      <div className="min-h-[80vh] flex items-center justify-center p-4">
+        <VerifyEmail 
+          userId={pendingUserId}
+          email={pendingEmail}
+          onVerified={() => {
+            toast({
+              title: "ACCOUNT VERIFIED",
+              description: "Redirecting to home...",
+              className: "bg-black border-2 border-primary text-white font-display",
+            });
+            setTimeout(() => setLocation("/"), 1000);
+          }}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-[80vh] flex items-center justify-center p-4">
       <motion.div 
@@ -74,7 +121,6 @@ export default function Login() {
         animate={{ scale: 1, opacity: 1 }}
         className="max-w-md w-full bg-black border-4 border-primary p-8 relative overflow-hidden shadow-[10px_10px_0px_0px_white]"
       >
-        {/* Calling Card Aesthetic */}
         <div className="absolute top-0 left-0 w-full h-4 bg-primary" />
         <div className="absolute bottom-0 right-0 w-full h-4 bg-primary" />
         
@@ -83,15 +129,14 @@ export default function Login() {
             <span className="font-display text-4xl text-black font-bold italic">P5</span>
           </div>
           <h1 className="text-6xl font-display text-white mb-3 transform -skew-x-6 italic uppercase">
-            {isLogin ? "INFILTRATE" : "RECRUIT"}
+            {step === "login" ? "INFILTRATE" : "RECRUIT"}
           </h1>
           <p className="text-primary font-body text-lg font-bold italic">
-            {isLogin ? "Enter the Black Market" : "Join the Phantom Thieves"}
+            {step === "login" ? "Enter the Black Market" : "Join the Phantom Thieves"}
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5 relative z-10">
-          {/* Username */}
           <div>
             <label className="block text-white font-display text-sm uppercase tracking-widest mb-2">
               Codename
@@ -107,8 +152,7 @@ export default function Login() {
             />
           </div>
 
-          {/* Email - only for register */}
-          {!isLogin && (
+          {step === "register" && (
             <div>
               <label className="block text-white font-display text-sm uppercase tracking-widest mb-2">
                 Email
@@ -125,7 +169,6 @@ export default function Login() {
             </div>
           )}
 
-          {/* Password */}
           <div>
             <label className="block text-white font-display text-sm uppercase tracking-widest mb-2">
               Passphrase
@@ -146,18 +189,17 @@ export default function Login() {
             disabled={isLoading}
             className="w-full text-2xl py-4 shadow-[8px_8px_0px_0px_#fff]"
           >
-            {isLoading ? "PROCESSING..." : (isLogin ? "INFILTRATE" : "RECRUIT")}
+            {isLoading ? "PROCESSING..." : (step === "login" ? "INFILTRATE" : "RECRUIT")}
           </PhantomButton>
         </form>
 
-        {/* Toggle Mode */}
         <div className="text-center mt-6 relative z-10">
           <p className="text-white/70 font-body mb-3">
-            {isLogin ? "Don't have an account?" : "Already a member?"}
+            {step === "login" ? "Don't have an account?" : "Already a member?"}
           </p>
           <button
             onClick={() => {
-              setIsLogin(!isLogin);
+              setStep(step === "login" ? "register" : "login");
               setUsername("");
               setEmail("");
               setPassword("");
@@ -165,11 +207,10 @@ export default function Login() {
             disabled={isLoading}
             className="text-primary font-display font-bold text-lg uppercase hover:text-white transition-colors cursor-pointer hover:underline italic"
           >
-            {isLogin ? "BECOME A PHANTOM THIEF" : "INFILTRATE"}
+            {step === "login" ? "BECOME A PHANTOM THIEF" : "INFILTRATE"}
           </button>
         </div>
 
-        {/* Abstract background graphics */}
         <div className="absolute -bottom-20 -left-20 w-64 h-64 border-[20px] border-primary/10 rounded-full pointer-events-none" />
         <div className="absolute -top-20 -right-20 w-64 h-64 border-[20px] border-primary/10 rounded-full pointer-events-none" />
       </motion.div>
