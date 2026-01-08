@@ -3,8 +3,9 @@ import { motion } from "framer-motion";
 import { useUser } from "@/hooks/use-user";
 import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
-import { Sun, Moon } from "lucide-react";
+import { Sun, Moon, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/lib/LanguageContext";
 
 import phantomLogo from "../PhantomThieves.webp";
 
@@ -12,11 +13,12 @@ export function Navbar() {
   const [location] = useLocation();
   const { data: user } = useUser();
   const { theme, setTheme } = useTheme();
+  const { language, setLanguage, t } = useLanguage();
 
   const links = [
-    { href: "/", label: "HIDEOUT" },
-    { href: "/shop", label: "BLACK MARKET" },
-    { href: "/orders", label: "MY HEISTS" },
+    { href: "/", label: t("nav.hideout") || "HIDEOUT" },
+    { href: "/shop", label: t("nav.shop") },
+    { href: "/orders", label: t("nav.orders") },
   ];
 
   return (
@@ -62,6 +64,15 @@ export function Navbar() {
           <Button
             variant="ghost"
             size="icon"
+            onClick={() => setLanguage(language === "en" ? "ar" : "en")}
+            className="hover-elevate bg-white dark:bg-black border-2 border-primary rounded-none rotate-3 hover:rotate-0 transition-transform"
+          >
+            <Languages className="h-5 w-5 text-black dark:text-white" />
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             className="hover-elevate bg-white dark:bg-black border-2 border-primary rounded-none rotate-3 hover:rotate-0 transition-transform"
           >
@@ -72,7 +83,7 @@ export function Navbar() {
           {user ? (
             <div className="flex items-center gap-4 bg-white dark:bg-black p-1 clip-path-comic-2 shadow-[4px_4px_0px_0px_#FF0019] border-2 border-black dark:border-white">
               <div className="text-right px-2">
-                <p className="text-[10px] text-black/50 dark:text-white/50 font-bold uppercase leading-none">Codename</p>
+                <p className="text-[10px] text-black/50 dark:text-white/50 font-bold uppercase leading-none">{t("auth.codename")}</p>
                 <p className="font-display text-xl leading-none text-black dark:text-white tracking-tighter">{user.username}</p>
               </div>
               <img 
@@ -84,7 +95,7 @@ export function Navbar() {
           ) : (
             <Link href="/login">
               <div className="px-8 py-2 bg-white dark:bg-black text-black dark:text-white font-display text-2xl hover:bg-primary hover:text-white transition-all cursor-pointer clip-path-p5-angle shadow-[6px_6px_0px_0px_#FF0019] border-2 border-black dark:border-white">
-                LOGIN
+                {t("nav.login")}
               </div>
             </Link>
           )}

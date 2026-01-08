@@ -12,6 +12,7 @@ import Login from "@/pages/Login";
 import NotFound from "@/pages/not-found";
 import { ThemeProvider } from "next-themes";
 import { SparkBackground, PhantomShapes } from "@/components/BackgroundEffects";
+import { LanguageProvider } from "@/lib/LanguageContext";
 
 function Router() {
   return (
@@ -28,20 +29,22 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider attribute="class" defaultTheme="dark">
-        <TooltipProvider>
-          <div className="min-h-screen flex flex-col bg-background font-body selection:bg-primary selection:text-white overflow-x-hidden transition-colors duration-500">
-            <SparkBackground />
-            <PhantomShapes />
-            <Navbar />
-            <main className="flex-grow relative z-10">
-              <Router />
-            </main>
-            <Footer />
-            <Toaster />
-          </div>
-        </TooltipProvider>
-      </ThemeProvider>
+      <LanguageProvider>
+        <ThemeProvider attribute="class" defaultTheme="dark">
+          <TooltipProvider>
+            <div className="min-h-screen flex flex-col bg-background font-body selection:bg-primary selection:text-white overflow-x-hidden transition-colors duration-500">
+              <SparkBackground />
+              <PhantomShapes />
+              <Navbar />
+              <main className="flex-grow relative z-10">
+                <Router />
+              </main>
+              <Footer />
+              <Toaster />
+            </div>
+          </TooltipProvider>
+        </ThemeProvider>
+      </LanguageProvider>
     </QueryClientProvider>
   );
 }

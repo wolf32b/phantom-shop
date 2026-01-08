@@ -69,7 +69,7 @@ export default function Orders() {
                 </div>
                 <div>
                   <h3 className="font-display text-xl text-white mb-1">
-                    PRODUCT ID: {order.productId}
+                    HEIST #{order.id}
                   </h3>
                   <p className="text-white/50 text-sm font-body">
                     {format(new Date(order.createdAt!), "PPP 'at' p")}
