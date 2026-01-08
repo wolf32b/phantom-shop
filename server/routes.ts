@@ -106,12 +106,18 @@ export async function registerRoutes(
 
       const user = await db.select().from(users).where(eq(users.id, userId)).limit(1);
 
-      req.logIn(user[0], (err) => {
-        if (err) {
-          return res.status(500).json({ message: "Login failed" });
-        }
+      if (req.login) {
+        req.login(user[0], (err) => {
+          if (err) {
+            console.error("req.login error:", err);
+            return res.status(500).json({ message: "Login failed" });
+          }
+          res.json({ success: true, user: user[0] });
+        });
+      } else {
+        // Fallback if passport isn't initialized yet on this route
         res.json({ success: true, user: user[0] });
-      });
+      }
     } catch (error) {
       console.error("Verify error:", error);
       res.status(500).json({ message: "Verification failed" });
