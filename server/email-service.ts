@@ -6,7 +6,7 @@ export async function sendVerificationEmail(email: string, code: string): Promis
       const resend = new Resend(process.env.RESEND_API_KEY);
       
       await resend.emails.send({
-        from: "Phantom Thieves <noreply@phantom-thieves.local>",
+        from: "Phantom Thieves <onboarding@resend.dev>",
         to: email,
         subject: "Verify Your Phantom Thieves Account",
         html: `
