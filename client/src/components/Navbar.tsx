@@ -36,7 +36,7 @@ export function Navbar() {
               className="w-14 h-14 object-contain"
             />
           </div>
-          <span className="font-display text-4xl tracking-tighter text-foreground transform -skew-x-12 group-hover:text-primary transition-colors italic">
+          <span className="font-display text-4xl tracking-tighter text-white transform -skew-x-12 group-hover:text-primary transition-colors italic">
             PHANTOM<span className="text-primary not-italic transition-colors">SHOP</span>
           </span>
         </Link>
@@ -48,8 +48,8 @@ export function Navbar() {
                 className={cn(
                   "relative px-8 py-3 font-display text-3xl tracking-tighter cursor-pointer transition-all duration-300 transform italic uppercase",
                   location === link.href 
-                    ? "bg-primary text-white -skew-x-12 scale-110 shadow-[8px_8px_0px_0px_white] dark:shadow-[8px_8px_0px_0px_white]" 
-                    : "text-foreground/80 hover:text-foreground hover:-skew-x-12 hover:bg-foreground/10"
+                    ? "bg-primary text-white -skew-x-12 scale-110 shadow-[8px_8px_0px_0px_white]" 
+                    : "text-white/80 hover:text-white hover:-skew-x-12 hover:bg-white/10"
                 )}
               >
                 {link.label}

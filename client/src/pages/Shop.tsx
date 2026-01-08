@@ -83,7 +83,7 @@ export default function Shop() {
             
             <div className="text-center relative z-10">
               <div className="absolute -top-12 -left-12 text-white text-8xl font-display opacity-10 italic transform rotate-[-25deg] pointer-events-none">STOLEN</div>
-              <h3 className="text-7xl font-display text-white-p5 mb-4 tracking-tighter italic uppercase text-shadow-blood">
+              <h3 className="text-7xl font-display text-white mb-4 tracking-tighter italic uppercase text-shadow-blood">
                 BLACK MARKET
               </h3>
               <p className="text-primary font-display text-3xl italic font-bold border-y-4 border-primary py-2 inline-block">
@@ -99,7 +99,7 @@ export default function Shop() {
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   placeholder="000"
-                  className="w-full bg-background border-8 border-primary p-8 text-7xl text-center text-foreground font-display focus:shadow-[0_0_40px_rgba(255,0,25,0.6)] focus:outline-none transition-all relative z-10 italic"
+                  className="w-full bg-black border-8 border-primary p-8 text-7xl text-center text-white font-display focus:shadow-[0_0_40px_rgba(255,0,25,0.6)] focus:outline-none transition-all relative z-10 italic"
                 />
                 <div className="absolute left-6 top-1/2 -translate-y-1/2 text-5xl text-primary font-display z-10 animate-bounce">
                   R$
