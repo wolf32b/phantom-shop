@@ -7,7 +7,7 @@ import { setupAuth } from "./replit_integrations/auth";
 import { hashPassword, verifyPassword } from "./auth-utils";
 import { db } from "./db";
 import { users, verificationCodes } from "@shared/schema";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { sendVerificationEmail } from "./email-service";
 
 function generateVerificationCode(): string {
@@ -132,7 +132,7 @@ export async function registerRoutes(
         return res.status(400).json({ message: "Missing username or password" });
       }
 
-      const user = await db.select().from(users).where(eq(users.username, username)).limit(1);
+      const user = await db.select().from(users).where(eq(sql`LOWER(${users.username})`, username.toLowerCase())).limit(1);
       console.log(`[AUTH] Login attempt for user: ${username}, found: ${user.length > 0}`);
       
       if (user.length === 0) {
