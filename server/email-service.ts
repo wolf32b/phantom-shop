@@ -1,11 +1,14 @@
 export async function sendVerificationEmail(email: string, code: string): Promise<void> {
-  // For development, just log the code - in production, integrate with Resend/SendGrid
+  console.log(`[AUTH] Attempting to send verification email to: ${email}`);
+  
   if (process.env.RESEND_API_KEY) {
     try {
       const { Resend } = await import("resend");
       const resend = new Resend(process.env.RESEND_API_KEY);
       
-      await resend.emails.send({
+      console.log(`[AUTH] Using Resend API Key: ${process.env.RESEND_API_KEY.substring(0, 5)}...`);
+      
+      const response = await resend.emails.send({
         from: "Phantom Thieves <onboarding@resend.dev>",
         to: email,
         subject: "Verify Your Phantom Thieves Account",
@@ -21,12 +24,12 @@ export async function sendVerificationEmail(email: string, code: string): Promis
           </div>
         `,
       });
+      console.log("[AUTH] Resend API Response:", JSON.stringify(response));
     } catch (error) {
-      console.error("Failed to send verification email:", error);
-      console.log(`[DEV] Verification code for ${email}: ${code}`);
+      console.error("[AUTH] Failed to send verification email via Resend:", error);
+      console.log(`[AUTH] FALLBACK: Verification code for ${email}: ${code}`);
     }
   } else {
-    // Development mode - just log the code
-    console.log(`[DEV MODE] Verification code for ${email}: ${code}`);
+    console.log(`[AUTH] [DEV MODE] No API Key found. Verification code for ${email}: ${code}`);
   }
 }
