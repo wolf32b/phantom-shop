@@ -147,6 +147,7 @@ export async function registerRoutes(
       }
 
       const isValid = await verifyPassword(password, passwordHash);
+      console.log(`[AUTH] Login attempt for ${username}: password valid = ${isValid}`);
       if (!isValid) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
