@@ -133,21 +133,25 @@ export async function registerRoutes(
       }
 
       const user = await db.select().from(users).where(eq(users.username, username)).limit(1);
+      console.log(`[AUTH] Login attempt for user: ${username}, found: ${user.length > 0}`);
+      
       if (user.length === 0) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
 
+      console.log(`[AUTH] User verified status: ${user[0].isEmailVerified}`);
       if (!user[0].isEmailVerified) {
         return res.status(403).json({ message: "Email not verified", userId: user[0].id });
       }
 
       const passwordHash = user[0].passwordHash;
+      console.log(`[AUTH] Password hash exists: ${!!passwordHash}`);
       if (!passwordHash) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
 
       const isValid = await verifyPassword(password, passwordHash);
-      console.log(`[AUTH] Login attempt for ${username}: password valid = ${isValid}`);
+      console.log(`[AUTH] Password valid: ${isValid}`);
       if (!isValid) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
