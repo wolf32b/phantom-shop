@@ -119,7 +119,7 @@ export default function Login() {
       <motion.div 
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="max-w-md w-full bg-black border-4 border-primary p-8 relative overflow-hidden shadow-[10px_10px_0px_0px_white]"
+        className="max-w-md w-full bg-background border-4 border-primary p-8 relative overflow-hidden shadow-[10px_10px_0px_0px_black] dark:shadow-[10px_10px_0px_0px_white]"
       >
         <div className="absolute top-0 left-0 w-full h-4 bg-primary" />
         <div className="absolute bottom-0 right-0 w-full h-4 bg-primary" />
@@ -128,7 +128,7 @@ export default function Login() {
           <div className="w-20 h-20 bg-primary mx-auto mb-6 flex items-center justify-center transform rotate-3 shadow-[6px_6px_0px_0px_#fff] border-4 border-white">
             <span className="font-display text-4xl text-black font-bold italic">P5</span>
           </div>
-          <h1 className="text-6xl font-display text-white mb-3 transform -skew-x-6 italic uppercase">
+          <h1 className="text-6xl font-display text-white-p5 mb-3 transform -skew-x-6 italic uppercase">
             {step === "login" ? "INFILTRATE" : "RECRUIT"}
           </h1>
           <p className="text-primary font-body text-lg font-bold italic">
@@ -138,7 +138,7 @@ export default function Login() {
 
         <form onSubmit={handleSubmit} className="space-y-5 relative z-10">
           <div>
-            <label className="block text-white font-display text-sm uppercase tracking-widest mb-2">
+            <label className="block text-white-p5 font-display text-sm uppercase tracking-widest mb-2">
               Codename
             </label>
             <input
@@ -146,7 +146,7 @@ export default function Login() {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="phantom_user"
-              className="w-full bg-black border-4 border-primary text-white px-4 py-3 font-display text-lg focus:outline-none focus:shadow-[0_0_20px_rgba(255,0,25,0.6)] transition-all italic uppercase"
+              className="w-full bg-background border-4 border-primary text-foreground px-4 py-3 font-display text-lg focus:outline-none focus:shadow-[0_0_20px_rgba(255,0,25,0.6)] transition-all italic uppercase"
               required
               disabled={isLoading}
             />
@@ -154,7 +154,7 @@ export default function Login() {
 
           {step === "register" && (
             <div>
-              <label className="block text-white font-display text-sm uppercase tracking-widest mb-2">
+              <label className="block text-white-p5 font-display text-sm uppercase tracking-widest mb-2">
                 Email
               </label>
               <input
@@ -162,7 +162,7 @@ export default function Login() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@email.com"
-                className="w-full bg-black border-4 border-primary text-white px-4 py-3 font-display text-lg focus:outline-none focus:shadow-[0_0_20px_rgba(255,0,25,0.6)] transition-all italic"
+                className="w-full bg-background border-4 border-primary text-foreground px-4 py-3 font-display text-lg focus:outline-none focus:shadow-[0_0_20px_rgba(255,0,25,0.6)] transition-all italic"
                 required
                 disabled={isLoading}
               />
@@ -170,7 +170,7 @@ export default function Login() {
           )}
 
           <div>
-            <label className="block text-white font-display text-sm uppercase tracking-widest mb-2">
+            <label className="block text-white-p5 font-display text-sm uppercase tracking-widest mb-2">
               Passphrase
             </label>
             <input
@@ -178,7 +178,7 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full bg-black border-4 border-primary text-white px-4 py-3 font-display text-lg focus:outline-none focus:shadow-[0_0_20px_rgba(255,0,25,0.6)] transition-all italic"
+              className="w-full bg-background border-4 border-primary text-foreground px-4 py-3 font-display text-lg focus:outline-none focus:shadow-[0_0_20px_rgba(255,0,25,0.6)] transition-all italic"
               required
               disabled={isLoading}
             />
@@ -194,7 +194,7 @@ export default function Login() {
         </form>
 
         <div className="text-center mt-6 relative z-10">
-          <p className="text-white/70 font-body mb-3">
+          <p className="text-foreground/70 font-body mb-3">
             {step === "login" ? "Don't have an account?" : "Already a member?"}
           </p>
           <button

@@ -59,7 +59,7 @@ export function VerifyEmail({ userId, email, onVerified }: VerifyEmailProps) {
     <motion.div
       initial={{ scale: 0.9, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
-      className="max-w-md w-full bg-black border-4 border-primary p-8 relative overflow-hidden shadow-[10px_10px_0px_0px_white]"
+      className="max-w-md w-full bg-background border-4 border-primary p-8 relative overflow-hidden shadow-[10px_10px_0px_0px_black] dark:shadow-[10px_10px_0px_0px_white]"
     >
       <div className="absolute top-0 left-0 w-full h-4 bg-primary" />
       <div className="absolute bottom-0 right-0 w-full h-4 bg-primary" />
@@ -68,10 +68,10 @@ export function VerifyEmail({ userId, email, onVerified }: VerifyEmailProps) {
         <div className="w-20 h-20 bg-primary mx-auto mb-6 flex items-center justify-center transform rotate-3 shadow-[6px_6px_0px_0px_#fff] border-4 border-white">
           <span className="font-display text-4xl text-black font-bold italic">P5</span>
         </div>
-        <h1 className="text-5xl font-display text-white mb-3 transform -skew-x-6 italic uppercase">
+        <h1 className="text-5xl font-display text-white-p5 mb-3 transform -skew-x-6 italic uppercase">
           VERIFY EMAIL
         </h1>
-        <p className="text-white font-body text-lg mb-2">
+        <p className="text-foreground font-body text-lg mb-2">
           Check your inbox at:
         </p>
         <p className="text-primary font-display font-bold text-xl italic">
@@ -81,7 +81,7 @@ export function VerifyEmail({ userId, email, onVerified }: VerifyEmailProps) {
 
       <form onSubmit={handleVerify} className="space-y-5 relative z-10">
         <div>
-          <label className="block text-white font-display text-sm uppercase tracking-widest mb-2">
+          <label className="block text-white-p5 font-display text-sm uppercase tracking-widest mb-2">
             Verification Code
           </label>
           <input
@@ -90,11 +90,11 @@ export function VerifyEmail({ userId, email, onVerified }: VerifyEmailProps) {
             onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
             placeholder="000000"
             maxLength={6}
-            className="w-full bg-black border-4 border-primary text-white px-4 py-4 font-display text-4xl text-center focus:outline-none focus:shadow-[0_0_20px_rgba(255,0,25,0.6)] transition-all italic tracking-[0.5em]"
+            className="w-full bg-background border-4 border-primary text-foreground px-4 py-4 font-display text-4xl text-center focus:outline-none focus:shadow-[0_0_20px_rgba(255,0,25,0.6)] transition-all italic tracking-[0.5em]"
             required
             disabled={isLoading}
           />
-          <p className="text-white/50 text-xs mt-2 text-center font-body">
+          <p className="text-foreground/50 text-xs mt-2 text-center font-body">
             Enter the 6-digit code from your email
           </p>
         </div>
@@ -108,7 +108,7 @@ export function VerifyEmail({ userId, email, onVerified }: VerifyEmailProps) {
         </PhantomButton>
       </form>
 
-      <p className="text-center text-white/50 text-xs mt-6 font-mono">
+      <p className="text-center text-foreground/50 text-xs mt-6 font-mono">
         Code expires in 15 minutes
       </p>
 

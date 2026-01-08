@@ -19,8 +19,8 @@ export function PhantomButton({
   const baseStyles = "relative px-8 py-3 font-display uppercase tracking-widest text-lg font-bold transform transition-all duration-200 group";
   
   const variants = {
-    primary: "bg-primary text-white hover:bg-white hover:text-black border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]",
-    secondary: "bg-black text-white border-4 border-primary hover:bg-primary hover:text-white shadow-[6px_6px_0px_0px_rgba(255,255,255,1)]",
+    primary: "bg-primary text-white hover:bg-background hover:text-foreground border-4 border-foreground shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]",
+    secondary: "bg-background text-foreground border-4 border-primary hover:bg-primary hover:text-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)]",
     danger: "bg-red-900 text-white border-4 border-red-500 hover:bg-red-600 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"
   };
 

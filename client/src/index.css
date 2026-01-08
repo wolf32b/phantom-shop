@@ -57,8 +57,17 @@
       repeating-linear-gradient(45deg, hsla(var(--foreground) / 0.02) 0px, hsla(var(--foreground) / 0.02) 1px, transparent 1px, transparent 10px);
   }
 
+  /* Force white text in P5 elements that should always be light on dark */
+  .dark .text-white-p5 {
+    @apply text-white;
+  }
+  
+  :root:not(.dark) .text-white-p5 {
+    @apply text-black;
+  }
+
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display tracking-tighter uppercase transform -skew-x-6;
+    @apply font-display tracking-tighter uppercase transform -skew-x-6 text-foreground;
   }
 }
 
