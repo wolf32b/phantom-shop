@@ -6,7 +6,7 @@ import { useRobuxCounter } from "@/hooks/use-stats";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
 import { useState } from "react";
-import { queryClient } from "@/lib/queryClient";
+import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useLanguage } from "@/lib/LanguageContext";
 
 export default function Shop() {
@@ -17,6 +17,29 @@ export default function Shop() {
   const { t } = useLanguage();
   const [amount, setAmount] = useState<string>("");
   const [gamepassUrl, setGamepassUrl] = useState<string>("");
+  const [redeemCode, setRedeemCode] = useState("");
+  const [redeemAmount, setRedeemAmount] = useState("");
+  const [isRedeeming, setIsRedeeming] = useState(false);
+
+  const handleRedeem = async () => {
+    if (!redeemCode || !redeemAmount) return;
+    setIsRedeeming(true);
+    try {
+      const res = await apiRequest("POST", "/api/codes/redeem", { 
+        code: redeemCode, 
+        amount: parseInt(redeemAmount) 
+      });
+      if (!res.ok) throw new Error("Redeem failed");
+      
+      toast({ title: "Redeemed!", description: "Funds added to heist pool" });
+      setRedeemCode("");
+      setRedeemAmount("");
+    } catch (err) {
+      toast({ title: "Error", description: "Invalid code or balance", variant: "destructive" });
+    } finally {
+      setIsRedeeming(false);
+    }
+  };
 
   const handleRequestRobux = () => {
     if (!user) {
@@ -84,6 +107,33 @@ export default function Shop() {
           {t("home.robux_pool")}
         </h2>
         <PhantomCounter value={stats?.value || 0} />
+      </div>
+
+      <div className="max-w-2xl mx-auto relative mb-12">
+        <PhantomCard>
+          <div className="p-8 space-y-4">
+            <h3 className="font-display text-2xl text-primary italic">REDEEM PHANTOM CODE</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <input
+                type="text"
+                placeholder="PHANTOM-XXXX"
+                value={redeemCode}
+                onChange={(e) => setRedeemCode(e.target.value)}
+                className="bg-background border-4 border-primary p-3 dark:bg-black dark:text-white"
+              />
+              <input
+                type="number"
+                placeholder="Amount"
+                value={redeemAmount}
+                onChange={(e) => setRedeemAmount(e.target.value)}
+                className="bg-background border-4 border-primary p-3 dark:bg-black dark:text-white"
+              />
+            </div>
+            <PhantomButton className="w-full" onClick={handleRedeem} disabled={isRedeeming}>
+              REDEEM NOW
+            </PhantomButton>
+          </div>
+        </PhantomCard>
       </div>
 
       <div className="max-w-2xl mx-auto relative">

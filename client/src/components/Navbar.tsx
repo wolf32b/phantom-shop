@@ -28,6 +28,7 @@ export function Navbar() {
   const links = [
     { href: "/", label: t("nav.hideout") || "HIDEOUT" },
     { href: "/shop", label: t("nav.shop") },
+    { href: "/codes", label: t("nav.codes") || "CODES" },
     { href: "/orders", label: t("nav.orders") },
   ];
 

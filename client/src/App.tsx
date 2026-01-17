@@ -7,6 +7,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import Home from "@/pages/Home";
 import Shop from "@/pages/Shop";
+import Codes from "@/pages/Codes";
 import Orders from "@/pages/Orders";
 import Login from "@/pages/Login";
 import NotFound from "@/pages/not-found";
@@ -19,6 +20,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/shop" component={Shop} />
+      <Route path="/codes" component={Codes} />
       <Route path="/orders" component={Orders} />
       <Route path="/login" component={Login} />
       <Route component={NotFound} />

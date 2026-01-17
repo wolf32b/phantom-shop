@@ -28,6 +28,25 @@ export const insertOrderSchema = createInsertSchema(orders).omit({
   amount: z.number().min(1, "Amount must be at least 1"),
 });
 
+export const phantomCodes = pgTable("phantom_codes", {
+  id: serial("id").primaryKey(),
+  code: text("code").notNull().unique(),
+  initialAmount: integer("initial_amount").notNull(),
+  remainingAmount: integer("remaining_amount").notNull(),
+  email: text("email").notNull(),
+  isPaid: boolean("is_paid").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertPhantomCodeSchema = createInsertSchema(phantomCodes).omit({ 
+  id: true, 
+  createdAt: true,
+  isPaid: true
+});
+
+export type PhantomCode = typeof phantomCodes.$inferSelect;
+export type InsertPhantomCode = z.infer<typeof insertPhantomCodeSchema>;
+
 export type Order = typeof orders.$inferSelect;
 export type InsertOrder = z.infer<typeof insertOrderSchema>;
 

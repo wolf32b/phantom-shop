@@ -6,7 +6,7 @@ import { z } from "zod";
 import { setupAuth } from "./replit_integrations/auth";
 import { hashPassword, verifyPassword } from "./auth-utils";
 import { db } from "./db";
-import { users, verificationCodes, insertOrderSchema, notifications } from "@shared/schema";
+import { users, verificationCodes, insertOrderSchema, notifications, phantomCodes } from "@shared/schema";
 import { eq, sql } from "drizzle-orm";
 import { sendVerificationEmail } from "./email-service";
 
@@ -243,6 +243,38 @@ export async function registerRoutes(
     if (!req.isAuthenticated()) return res.sendStatus(401);
     await storage.markNotificationAsRead(parseInt(req.params.id));
     res.json({ success: true });
+  });
+
+  app.post("/api/codes/purchase", async (req, res) => {
+    const { amount, email } = req.body;
+    if (!amount || !email) return res.status(400).json({ message: "Missing amount or email" });
+    
+    const codeStr = `PHANTOM-${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
+    const newCode = await storage.createPhantomCode({
+      code: codeStr,
+      initialAmount: amount,
+      remainingAmount: amount,
+      email
+    });
+
+    // In a real app, send email here
+    console.log(`[CODES] Code ${codeStr} purchased by ${email}`);
+    
+    res.json(newCode);
+  });
+
+  app.post("/api/codes/redeem", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    const { code, amount } = req.body;
+    
+    const phantomCode = await storage.getPhantomCode(code);
+    if (!phantomCode) return res.status(404).json({ message: "Code not found" });
+    if (phantomCode.remainingAmount < amount) return res.status(400).json({ message: "Insufficient balance in code" });
+
+    // Deduct from code and add to user or trigger heist
+    await storage.updatePhantomCodeAmount(phantomCode.id, phantomCode.remainingAmount - amount);
+    
+    res.json({ success: true, remaining: phantomCode.remainingAmount - amount });
   });
 
   // Ensure stats seeded

@@ -1,9 +1,10 @@
 import { db } from "./db";
 import {
-  users, orders, globalStats, notifications,
+  users, orders, globalStats, notifications, phantomCodes,
   type User, type UpsertUser,
   type Order, type InsertOrder,
   type Notification, type InsertNotification,
+  type PhantomCode, type InsertPhantomCode,
   insertOrderSchema
 } from "@shared/schema";
 import { eq } from "drizzle-orm";
@@ -71,6 +72,10 @@ export interface IStorage {
 
   getGlobalStat(key: string): Promise<number>;
   setGlobalStat(key: string, value: number): Promise<void>;
+
+  createPhantomCode(code: InsertPhantomCode): Promise<PhantomCode>;
+  getPhantomCode(code: string): Promise<PhantomCode | undefined>;
+  updatePhantomCodeAmount(id: number, amount: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -177,6 +182,24 @@ export class DatabaseStorage implements IStorage {
         target: globalStats.key,
         set: { value }
       });
+  }
+
+  async createPhantomCode(code: InsertPhantomCode): Promise<PhantomCode> {
+    const [newCode] = await db.insert(phantomCodes).values({
+      ...code,
+      remainingAmount: code.initialAmount,
+      isPaid: true, // Assuming paid for now as we don't have stripe integration yet
+    }).returning();
+    return newCode;
+  }
+
+  async getPhantomCode(code: string): Promise<PhantomCode | undefined> {
+    const [found] = await db.select().from(phantomCodes).where(eq(phantomCodes.code, code));
+    return found;
+  }
+
+  async updatePhantomCodeAmount(id: number, amount: number): Promise<void> {
+    await db.update(phantomCodes).set({ remainingAmount: amount }).where(eq(phantomCodes.id, id));
   }
 }
 
