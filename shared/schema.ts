@@ -15,6 +15,7 @@ export const orders = pgTable("orders", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").notNull(),
   amount: integer("amount").notNull(),
+  gamepassUrl: text("gamepass_url").notNull(),
   status: text("status").notNull().default("pending"),
   createdAt: timestamp("created_at").defaultNow(),
 });
@@ -22,6 +23,9 @@ export const orders = pgTable("orders", {
 export const insertOrderSchema = createInsertSchema(orders).omit({ 
   id: true, 
   createdAt: true 
+}).extend({
+  gamepassUrl: z.string().url("Invalid gamepass URL"),
+  amount: z.number().min(1, "Amount must be at least 1"),
 });
 
 export type Order = typeof orders.$inferSelect;

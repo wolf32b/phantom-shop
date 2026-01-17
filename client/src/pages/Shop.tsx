@@ -16,6 +16,7 @@ export default function Shop() {
   const { data: user } = useUser();
   const { t } = useLanguage();
   const [amount, setAmount] = useState<string>("");
+  const [gamepassUrl, setGamepassUrl] = useState<string>("");
 
   const handleRequestRobux = () => {
     if (!user) {
@@ -37,6 +38,15 @@ export default function Shop() {
       return;
     }
 
+    if (!gamepassUrl.startsWith("https://www.roblox.com/game-pass/")) {
+      toast({
+        title: t("common.error"),
+        description: t("shop.gamepass_help"),
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (robuxAmount > (stats?.value || 0)) {
       toast({
         title: t("common.error"),
@@ -46,7 +56,7 @@ export default function Shop() {
       return;
     }
 
-    createOrder(robuxAmount, {
+    createOrder({ amount: robuxAmount, gamepassUrl }, {
       onSuccess: () => {
         toast({
           title: t("common.success"),
@@ -54,7 +64,7 @@ export default function Shop() {
           className: "bg-black border-2 border-primary text-white font-display",
         });
         setAmount("");
-        queryClient.invalidateQueries({ queryKey: ["/api/stats/robux"] });
+        setGamepassUrl("");
       },
       onError: (error) => {
         toast({
@@ -96,17 +106,33 @@ export default function Shop() {
             </div>
 
             <div className="space-y-6 relative z-10">
-              <div className="relative group">
-                <div className="absolute -inset-4 bg-primary/20 clip-path-comic-1 transition-all group-focus-within:bg-primary/40 -z-10" />
-                <input
-                  type="number"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  placeholder="000"
-                  className="w-full bg-background border-8 border-primary p-8 text-7xl text-center text-foreground font-display focus:shadow-[0_0_40px_rgba(255,0,25,0.6)] focus:outline-none transition-all relative z-10 italic dark:bg-black dark:text-white"
-                />
-                <div className="absolute left-6 top-1/2 -translate-y-1/2 text-5xl text-primary font-display z-10 animate-bounce">
-                  R$
+              <div className="space-y-4">
+                <div className="relative group">
+                  <div className="absolute -inset-2 bg-primary/20 clip-path-comic-1 transition-all group-focus-within:bg-primary/40 -z-10" />
+                  <input
+                    type="number"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    placeholder="000"
+                    className="w-full bg-background border-4 border-primary p-4 text-5xl text-center text-foreground font-display focus:shadow-[0_0_20px_rgba(255,0,25,0.4)] focus:outline-none transition-all relative z-10 italic dark:bg-black dark:text-white"
+                  />
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-3xl text-primary font-display z-10">
+                    R$
+                  </div>
+                </div>
+
+                <div className="relative group">
+                  <div className="absolute -inset-2 bg-primary/20 clip-path-comic-1 transition-all group-focus-within:bg-primary/40 -z-10" />
+                  <input
+                    type="text"
+                    value={gamepassUrl}
+                    onChange={(e) => setGamepassUrl(e.target.value)}
+                    placeholder={t("shop.gamepass_placeholder")}
+                    className="w-full bg-background border-4 border-primary p-4 text-xl text-foreground font-body focus:shadow-[0_0_20px_rgba(255,0,25,0.4)] focus:outline-none transition-all relative z-10 dark:bg-black dark:text-white"
+                  />
+                  <p className="text-xs text-primary mt-1 font-display italic">
+                    {t("shop.gamepass_help")}
+                  </p>
                 </div>
               </div>
 

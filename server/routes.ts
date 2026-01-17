@@ -6,7 +6,7 @@ import { z } from "zod";
 import { setupAuth } from "./replit_integrations/auth";
 import { hashPassword, verifyPassword } from "./auth-utils";
 import { db } from "./db";
-import { users, verificationCodes } from "@shared/schema";
+import { users, verificationCodes, insertOrderSchema } from "@shared/schema";
 import { eq, sql } from "drizzle-orm";
 import { sendVerificationEmail } from "./email-service";
 
@@ -173,16 +173,16 @@ export async function registerRoutes(
 
   app.post(api.orders.create.path, async (req, res) => {
     if (!req.isAuthenticated()) {
-      return res.status(401).json({ message: "غير مصرح لك بالدخول" });
+      return res.status(401).json({ message: "Access Denied. You must be logged in." });
     }
 
     try {
-      const input = api.orders.create.input.parse(req.body);
+      const input = insertOrderSchema.parse(req.body);
       const currentRobux = await storage.getGlobalStat('total_robux');
       
       if (input.amount > currentRobux) {
         return res.status(400).json({ 
-          message: "لا يوجد ما يكفي من الروبوكس في الخزنة حالياً",
+          message: "Insufficient Robux in the global pool.",
           field: "amount"
         });
       }
@@ -192,17 +192,22 @@ export async function registerRoutes(
       const order = await storage.createOrder({
         userId,
         amount: input.amount,
+        gamepassUrl: input.gamepassUrl,
         status: "pending"
       });
+
+      // Deduct from global pool
+      await storage.setGlobalStat('total_robux', currentRobux - input.amount);
+
       res.status(201).json(order);
     } catch (err) {
       if (err instanceof z.ZodError) {
         return res.status(400).json({
-          message: "خطأ في البيانات المرسلة",
+          message: err.errors[0].message,
           field: err.errors[0].path.join('.'),
         });
       }
-      throw err;
+      res.status(500).json({ message: "Heist failed." });
     }
   });
 

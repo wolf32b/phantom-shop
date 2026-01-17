@@ -30,11 +30,6 @@ export class DatabaseStorage implements IStorage {
 
   async createOrder(order: InsertOrder): Promise<Order> {
     const [newOrder] = await db.insert(orders).values(order).returning();
-    
-    // Update global robux counter
-    const current = await this.getGlobalStat('total_robux');
-    await this.setGlobalStat('total_robux', current - order.amount);
-    
     return newOrder;
   }
 

@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { api, type InsertOrder } from "@shared/routes";
+import { api } from "@shared/routes";
+import { type Order } from "@shared/schema";
 
 export function useOrders() {
   return useQuery({
@@ -17,27 +18,24 @@ export function useOrders() {
 export function useCreateOrder() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (productId: number) => {
-      const data = { productId };
-      const validated = api.orders.create.input.parse(data);
-      
+    mutationFn: async (data: { amount: number; gamepassUrl: string }) => {
       const res = await fetch(api.orders.create.path, {
         method: api.orders.create.method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(validated),
+        body: JSON.stringify(data),
         credentials: "include",
       });
 
       if (!res.ok) {
         if (res.status === 401) throw new Error("Please login to steal items");
-        if (res.status === 400) {
-          const error = api.orders.create.responses[400].parse(await res.json());
-          throw new Error(error.message);
-        }
-        throw new Error("Failed to create order");
+        const error = await res.json();
+        throw new Error(error.message || "Failed to create order");
       }
-      return api.orders.create.responses[201].parse(await res.json());
+      return (await res.json()) as Order;
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [api.orders.list.path] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [api.orders.list.path] });
+      queryClient.invalidateQueries({ queryKey: ["/api/stats/robux"] });
+    },
   });
 }
