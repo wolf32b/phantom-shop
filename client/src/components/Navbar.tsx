@@ -3,9 +3,16 @@ import { motion } from "framer-motion";
 import { useUser } from "@/hooks/use-user";
 import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
-import { Sun, Moon, Languages } from "lucide-react";
+import { Sun, Moon, Languages, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/lib/LanguageContext";
+import { useNotifications } from "../hooks/use-notifications";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 import phantomLogo from "../PhantomThieves.webp";
 
@@ -14,6 +21,9 @@ export function Navbar() {
   const { data: user } = useUser();
   const { theme, setTheme } = useTheme();
   const { language, setLanguage, t } = useLanguage();
+  const { data: notifications, mutate: markAsRead } = useNotifications();
+
+  const unreadCount = (notifications as any[])?.filter((n: any) => !n.isRead).length || 0;
 
   const links = [
     { href: "/", label: t("nav.hideout") || "HIDEOUT" },
@@ -61,6 +71,50 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-4">
+          {user && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="relative hover-elevate bg-white dark:bg-black border-2 border-primary rounded-none">
+                  <Bell className="h-5 w-5 text-black dark:text-white" />
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-primary text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full animate-bounce">
+                      {unreadCount}
+                    </span>
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-80 bg-black border-2 border-primary text-white font-body p-0">
+                <div className="p-3 border-b border-primary/30 font-display text-xl bg-primary/10">
+                  {t("nav.notifications") || "NOTIFICATIONS"}
+                </div>
+                <div className="max-h-96 overflow-y-auto">
+                  {notifications?.length === 0 ? (
+                    <div className="p-8 text-center text-white/50 italic">
+                      No updates from the hideout.
+                    </div>
+                  ) : (
+                    notifications?.map((n: any) => (
+                      <DropdownMenuItem 
+                        key={n.id} 
+                        className={cn(
+                          "flex flex-col items-start gap-1 p-4 border-b border-primary/10 focus:bg-primary/20 cursor-pointer",
+                          !n.isRead && "bg-primary/5"
+                        )}
+                        onClick={() => markAsRead(n.id)}
+                      >
+                        <div className="font-display text-lg text-primary">{n.title}</div>
+                        <div className="text-sm leading-tight text-white/80">{n.message}</div>
+                        <div className="text-[10px] text-white/40 mt-1">
+                          {new Date(n.createdAt!).toLocaleTimeString()}
+                        </div>
+                      </DropdownMenuItem>
+                    ))
+                  )}
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+
           <Button
             variant="ghost"
             size="icon"

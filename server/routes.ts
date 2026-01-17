@@ -6,7 +6,7 @@ import { z } from "zod";
 import { setupAuth } from "./replit_integrations/auth";
 import { hashPassword, verifyPassword } from "./auth-utils";
 import { db } from "./db";
-import { users, verificationCodes, insertOrderSchema } from "@shared/schema";
+import { users, verificationCodes, insertOrderSchema, notifications } from "@shared/schema";
 import { eq, sql } from "drizzle-orm";
 import { sendVerificationEmail } from "./email-service";
 
@@ -230,6 +230,19 @@ export async function registerRoutes(
   app.get(api.stats.getRobuxCounter.path, async (req, res) => {
     const value = await storage.getGlobalStat('total_robux');
     res.json({ value });
+  });
+
+  app.get("/api/notifications", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    // @ts-ignore
+    const list = await storage.getNotificationsForUser(req.user.id);
+    res.json(list);
+  });
+
+  app.post("/api/notifications/:id/read", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    await storage.markNotificationAsRead(parseInt(req.params.id));
+    res.json({ success: true });
   });
 
   // Ensure stats seeded
