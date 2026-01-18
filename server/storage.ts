@@ -34,10 +34,11 @@ async function initRoblox() {
 // Fixed getRobux check
 async function getRobuxSafe(): Promise<number> {
   try {
-    // Noblox v4.x uses getRobux() which returns a Promise<number>
-    // However, the typings might be tricky in some environments
-    const robux = await (noblox as any).getRobux();
-    return typeof robux === 'number' ? robux : 0;
+    if (!ROBLOX_COOKIE) return 0;
+    // Ensure we are logged in
+    await noblox.setCookie(ROBLOX_COOKIE);
+    const balance = await noblox.getRobux();
+    return typeof balance === 'number' ? balance : 0;
   } catch (e) {
     console.error("Robux check error:", e);
     return 0;
@@ -56,7 +57,7 @@ if (ROBLOX_COOKIE) {
     } catch (err) {
       console.error("[ROBLOX] Periodic sync failed:", err);
     }
-  }, 5 * 60 * 1000); // Every 5 minutes
+  }, 1 * 60 * 1000); // Sync every minute for better responsiveness
 }
 
 export interface IStorage {
@@ -106,48 +107,31 @@ export class DatabaseStorage implements IStorage {
     try {
       console.log(`[ROBLOX] Attempting to automate purchase for Order #${order.id} (${order.amount} Robux)`);
       
-      // Extract gamepass ID from URL
       const match = order.gamepassUrl.match(/game-pass\/(\d+)/);
-      if (!match) {
-        throw new Error("Invalid gamepass URL format");
-      }
-      
+      if (!match) throw new Error("Invalid gamepass URL format");
       const gamepassId = parseInt(match[1]);
+
+      // Use noblox to buy the gamepass
+      // Note: noblox.buy() is the standard method for purchasing items
+      await noblox.buy(gamepassId);
       
-      // Noblox doesn't support buying directly, but we can log the intent
-      console.log(`[ROBLOX] Automated purchase triggered for gamepass ${gamepassId}.`);
+      console.log(`[ROBLOX] Automated purchase successful for gamepass ${gamepassId}.`);
       
-      // Simulate successful purchase for demo purposes
-      setTimeout(async () => {
-        await db.update(orders).set({ status: "completed" }).where(eq(orders.id, order.id));
-        await this.createNotification({
-          userId: order.userId,
-          title: "Heist Successful",
-          message: `The Phantom Thieves have successfully transferred ${order.amount} Robux to your account!`,
-          type: "success"
-        });
-        console.log(`[ROBLOX] Order #${order.id} marked as completed.`);
-      }, 10000); // 10 seconds delay
-      
-      // For now, we mark as "processing" to show intent
-      await db.update(orders).set({ status: "processing" }).where(eq(orders.id, order.id));
-      
-      // Notify user
+      await db.update(orders).set({ status: "completed" }).where(eq(orders.id, order.id));
       await this.createNotification({
         userId: order.userId,
-        title: "Heist in Progress",
-        message: `We've identified your gamepass and the Phantom Thieves are now transferring ${order.amount} Robux.`,
-        type: "info"
+        title: "Heist Successful",
+        message: `The Phantom Thieves have successfully transferred ${order.amount} Robux to your account!`,
+        type: "success"
       });
       
     } catch (err) {
       console.error("[ROBLOX] Automation error:", err);
       await db.update(orders).set({ status: "failed" }).where(eq(orders.id, order.id));
-      
       await this.createNotification({
         userId: order.userId,
         title: "Heist Failed",
-        message: "Something went wrong with the transfer. Please contact the leader.",
+        message: `Automation error: ${err instanceof Error ? err.message : 'Unknown error'}. Please contact support.`,
         type: "error"
       });
     }
