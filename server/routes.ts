@@ -10,6 +10,10 @@ import { users, verificationCodes, insertOrderSchema, notifications, phantomCode
 import { eq, sql } from "drizzle-orm";
 import { sendVerificationEmail } from "./email-service";
 
+import Stripe from "stripe";
+
+const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY) : null;
+
 function generateVerificationCode(): string {
   return Math.random().toString().substring(2, 8);
 }
@@ -249,6 +253,10 @@ export async function registerRoutes(
     const { amount, email } = req.body;
     if (!amount || !email) return res.status(400).json({ message: "Missing amount or email" });
     
+    if (!stripe) {
+      return res.status(500).json({ message: "Payment system not configured (Stripe key missing)" });
+    }
+
     const codeStr = `PHANTOM-${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
     const newCode = await storage.createPhantomCode({
       code: codeStr,
@@ -257,10 +265,61 @@ export async function registerRoutes(
       email
     });
 
-    // In a real app, send email here
-    console.log(`[CODES] Code ${codeStr} purchased by ${email}`);
-    
-    res.json(newCode);
+    try {
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        line_items: [
+          {
+            price_data: {
+              currency: "usd",
+              product_data: {
+                name: `Phantom Code - ${amount} Robux`,
+                description: "Digital Robux redemption code",
+              },
+              unit_amount: Math.ceil(amount / 100) * 100, // Crude pricing logic, should be mapped properly
+            },
+            quantity: 1,
+          },
+        ],
+        mode: "payment",
+        success_url: `${req.headers.origin}/shop?success=true&code=${codeStr}`,
+        cancel_url: `${req.headers.origin}/shop?canceled=true`,
+        customer_email: email,
+        metadata: {
+          codeId: newCode.id.toString(),
+          code: codeStr,
+        },
+      });
+
+      res.json({ url: session.url, code: codeStr });
+    } catch (err) {
+      console.error("[STRIPE] Checkout error:", err);
+      res.status(500).json({ message: "Failed to create checkout session" });
+    }
+  });
+
+  // Stripe webhook to mark code as paid
+  app.post("/api/webhooks/stripe", async (req, res) => {
+    const sig = req.headers["stripe-signature"];
+    if (!sig || !process.env.STRIPE_WEBHOOK_SECRET) return res.sendStatus(400);
+
+    let event;
+    try {
+      event = stripe!.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+    } catch (err) {
+      return res.status(400).send(`Webhook Error: ${err instanceof Error ? err.message : 'Unknown'}`);
+    }
+
+    if (event.type === "checkout.session.completed") {
+      const session = event.data.object as Stripe.Checkout.Session;
+      const codeId = session.metadata?.codeId;
+      if (codeId) {
+        await storage.markPhantomCodeAsPaid(parseInt(codeId));
+        console.log(`[STRIPE] Code ${codeId} marked as paid`);
+      }
+    }
+
+    res.json({ received: true });
   });
 
   app.post("/api/codes/redeem", async (req, res) => {

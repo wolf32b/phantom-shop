@@ -77,6 +77,7 @@ export interface IStorage {
   createPhantomCode(code: InsertPhantomCode): Promise<PhantomCode>;
   getPhantomCode(code: string): Promise<PhantomCode | undefined>;
   updatePhantomCodeAmount(id: number, amount: number): Promise<void>;
+  markPhantomCodeAsPaid(id: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -172,9 +173,13 @@ export class DatabaseStorage implements IStorage {
     const [newCode] = await db.insert(phantomCodes).values({
       ...code,
       remainingAmount: code.initialAmount,
-      isPaid: true, // Assuming paid for now as we don't have stripe integration yet
+      isPaid: false, // Default to false until paid via Stripe
     }).returning();
     return newCode;
+  }
+
+  async markPhantomCodeAsPaid(id: number): Promise<void> {
+    await db.update(phantomCodes).set({ isPaid: true }).where(eq(phantomCodes.id, id));
   }
 
   async getPhantomCode(code: string): Promise<PhantomCode | undefined> {
