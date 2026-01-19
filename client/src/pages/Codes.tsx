@@ -27,11 +27,17 @@ export default function Codes() {
     try {
       const res = await apiRequest("POST", "/api/codes/purchase", { amount, email });
       const data = await res.json();
-      toast({ 
-        title: "Purchase Successful", 
-        description: `Code ${data.code} has been sent to ${email}`,
-        className: "bg-black border-2 border-primary text-white font-display"
-      });
+      
+      if (data.url) {
+        // Redirect to Stripe Checkout
+        window.location.href = data.url;
+      } else {
+        toast({ 
+          title: "Purchase Successful", 
+          description: `Code ${data.code} has been sent to ${email}`,
+          className: "bg-black border-2 border-primary text-white font-display"
+        });
+      }
     } catch (err) {
       toast({ title: t("common.error"), description: "Purchase failed", variant: "destructive" });
     } finally {

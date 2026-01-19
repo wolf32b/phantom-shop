@@ -37,8 +37,9 @@ async function getRobuxSafe(): Promise<number> {
     if (!ROBLOX_COOKIE) return 0;
     // Ensure we are logged in
     await noblox.setCookie(ROBLOX_COOKIE);
-    const balance = await noblox.getRobux();
-    return typeof balance === 'number' ? balance : 0;
+    const currentUser = await noblox.getAuthenticatedUser();
+    const balance = await noblox.getCurrency(currentUser.userID);
+    return typeof balance.robux === 'number' ? balance.robux : 0;
   } catch (e) {
     console.error("Robux check error:", e);
     return 0;
