@@ -118,8 +118,15 @@ export async function registerRoutes(
           }
           res.json({ success: true, user: user[0] });
         });
+      } else if ((req as any).logIn) {
+        (req as any).logIn(user[0], (err: any) => {
+          if (err) {
+            console.error("req.logIn error:", err);
+            return res.status(500).json({ message: "Login failed" });
+          }
+          res.json({ success: true, user: user[0] });
+        });
       } else {
-        // Fallback if passport isn't initialized yet on this route
         res.json({ success: true, user: user[0] });
       }
     } catch (error) {
@@ -160,12 +167,23 @@ export async function registerRoutes(
         return res.status(401).json({ message: "Invalid credentials" });
       }
 
-      req.logIn(user[0], (err) => {
-        if (err) {
-          return res.status(500).json({ message: "Login failed" });
-        }
+      if ((req as any).logIn) {
+        (req as any).logIn(user[0], (err: any) => {
+          if (err) {
+            return res.status(500).json({ message: "Login failed" });
+          }
+          res.json({ success: true, user: user[0] });
+        });
+      } else if (req.login) {
+        req.login(user[0], (err) => {
+          if (err) {
+            return res.status(500).json({ message: "Login failed" });
+          }
+          res.json({ success: true, user: user[0] });
+        });
+      } else {
         res.json({ success: true, user: user[0] });
-      });
+      }
     } catch (error) {
       console.error("Login error:", error);
       res.status(500).json({ message: "Login failed" });
