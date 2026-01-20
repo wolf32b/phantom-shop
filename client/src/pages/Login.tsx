@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useUser } from "@/hooks/use-user";
 import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
+import { queryClient } from "@/lib/queryClient";
 
 type AuthStep = "login" | "register" | "verify-email";
 
@@ -48,6 +49,8 @@ export default function Login() {
           });
           return;
         }
+
+        await queryClient.invalidateQueries({ queryKey: ["/api/user"] });
 
         toast({
           title: "SUCCESS",
@@ -101,7 +104,8 @@ export default function Login() {
         <VerifyEmail 
           userId={pendingUserId}
           email={pendingEmail}
-          onVerified={() => {
+          onVerified={async () => {
+            await queryClient.invalidateQueries({ queryKey: ["/api/user"] });
             toast({
               title: "ACCOUNT VERIFIED",
               description: "Redirecting to home...",

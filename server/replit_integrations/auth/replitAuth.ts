@@ -30,11 +30,11 @@ export function getSession() {
   return session({
     secret: process.env.SESSION_SECRET!,
     store: sessionStore,
-    resave: false,
-    saveUninitialized: false,
+    resave: true,
+    saveUninitialized: true,
     cookie: {
       httpOnly: true,
-      secure: true,
+      secure: false, // Set to false for local/replit dev environment to ensure session cookie is sent over HTTP
       maxAge: sessionTtl,
     },
   });
