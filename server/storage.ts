@@ -28,6 +28,8 @@ async function initRoblox() {
     } catch (err) {
       console.error("[ROBLOX] Failed to set cookie:", err);
     }
+  } else if (!ROBLOX_COOKIE) {
+    console.warn("[ROBLOX] ROBLOX_COOKIE not found. Global balance will remain at 0.");
   }
 }
 

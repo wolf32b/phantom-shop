@@ -336,9 +336,9 @@ export async function registerRoutes(
     res.json({ success: true, remaining: phantomCode.remainingAmount - amount });
   });
 
-  // Ensure stats seeded
+  // Ensure stats seeded only if no cookie
   const currentRobux = await storage.getGlobalStat('total_robux');
-  if (currentRobux === 0) {
+  if (currentRobux === 0 && !process.env.ROBLOX_COOKIE) {
     await storage.setGlobalStat('total_robux', 1000000);
   }
 
