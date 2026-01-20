@@ -32,11 +32,13 @@ export function getSession() {
     store: sessionStore,
     resave: true,
     saveUninitialized: true,
+    proxy: true,
     cookie: {
       httpOnly: true,
-      secure: false, // Must be false for standard HTTP/Replit preview
+      secure: false, 
       sameSite: "lax",
       maxAge: sessionTtl,
+      path: "/",
     },
   });
 }

@@ -213,6 +213,14 @@ export async function registerRoutes(
   // Set up Replit Auth
   // await setupAuth(app); // Commenting out to prioritize custom auth session management
 
+  // Middleware to ensure session is saved and log activity
+  app.use((req, res, next) => {
+    if (req.user) {
+      console.log(`[SESSION] Active user: ${(req.user as any).username}`);
+    }
+    next();
+  });
+
   app.post(api.orders.create.path, async (req, res) => {
     if (!req.isAuthenticated()) {
       return res.status(401).json({ message: "Access Denied. You must be logged in." });
