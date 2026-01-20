@@ -218,6 +218,23 @@ export async function registerRoutes(
     if (req.user) {
       console.log(`[SESSION] Active user: ${(req.user as any).username}`);
     }
+    // Manually trigger session save on login to be sure
+    const _login = (req as any).logIn;
+    if (_login && !(req as any)._p5_login_wrapped) {
+      (req as any).logIn = function(user: any, options: any, done: any) {
+        if (typeof options === 'function') {
+          done = options;
+          options = {};
+        }
+        return _login.call(this, user, options, (err: any) => {
+          if (err) return done(err);
+          req.session.save((err) => {
+            done(err);
+          });
+        });
+      };
+      (req as any)._p5_login_wrapped = true;
+    }
     next();
   });
 
