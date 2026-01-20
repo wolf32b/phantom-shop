@@ -14,6 +14,9 @@ import Stripe from "stripe";
 
 const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY) : null;
 
+import { getSession } from "./replit_integrations/auth";
+import passport from "passport";
+
 function generateVerificationCode(): string {
   return Math.random().toString().substring(2, 8);
 }
@@ -23,6 +26,19 @@ export async function registerRoutes(
   app: Express
 ): Promise<Server> {
   // Custom Auth Routes
+  passport.serializeUser((user: any, cb) => {
+    cb(null, user.id);
+  });
+
+  passport.deserializeUser(async (id: string, cb) => {
+    try {
+      const user = await storage.getUser(id);
+      cb(null, user);
+    } catch (err) {
+      cb(err);
+    }
+  });
+
   app.post("/api/auth/register", async (req, res) => {
     try {
       const { username, email, password } = req.body;
@@ -190,8 +206,12 @@ export async function registerRoutes(
     }
   });
 
+  app.use(getSession());
+  app.use(passport.initialize());
+  app.use(passport.session());
+
   // Set up Replit Auth
-  await setupAuth(app);
+  // await setupAuth(app); // Commenting out to prioritize custom auth session management
 
   app.post(api.orders.create.path, async (req, res) => {
     if (!req.isAuthenticated()) {

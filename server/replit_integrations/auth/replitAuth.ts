@@ -34,7 +34,8 @@ export function getSession() {
     saveUninitialized: true,
     cookie: {
       httpOnly: true,
-      secure: false, // Set to false for local/replit dev environment to ensure session cookie is sent over HTTP
+      secure: false, // Must be false for standard HTTP/Replit preview
+      sameSite: "lax",
       maxAge: sessionTtl,
     },
   });
