@@ -61,7 +61,8 @@ export default function Shop() {
       return;
     }
 
-    if (!gamepassUrl.startsWith("https://www.roblox.com/game-pass/")) {
+    // Basic URL validation
+    if (!gamepassUrl.includes("roblox.com/game-pass/") && !gamepassUrl.match(/\d+/)) {
       toast({
         title: t("common.error"),
         description: t("shop.gamepass_help"),
@@ -109,100 +110,116 @@ export default function Shop() {
         <PhantomCounter value={stats?.value || 0} />
       </div>
 
-      <div className="max-w-2xl mx-auto relative mb-12">
-        <PhantomCard>
-          <div className="p-8 space-y-4">
-            <h3 className="font-display text-2xl text-primary italic">REDEEM PHANTOM CODE</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <input
-                type="text"
-                placeholder="PHANTOM-XXXX"
-                value={redeemCode}
-                onChange={(e) => setRedeemCode(e.target.value)}
-                className="bg-background border-4 border-primary p-3 dark:bg-black dark:text-white"
-              />
-              <input
-                type="number"
-                placeholder="Amount"
-                value={redeemAmount}
-                onChange={(e) => setRedeemAmount(e.target.value)}
-                className="bg-background border-4 border-primary p-3 dark:bg-black dark:text-white"
-              />
-            </div>
-            <PhantomButton className="w-full" onClick={handleRedeem} disabled={isRedeeming}>
-              REDEEM NOW
-            </PhantomButton>
-          </div>
-        </PhantomCard>
-      </div>
+      <div className="max-w-4xl mx-auto space-y-12">
+        {/* Main Purchase Card */}
+        <div className="relative">
+          <div className="absolute -inset-10 bg-primary/10 clip-path-comic-1 -z-10 halftone-pattern animate-pulse" />
+          <div className="absolute -inset-20 bg-background/40 clip-path-comic-2 -z-20 transform rotate-3 dark:bg-black/40" />
+          
+          <PhantomCard delay={0.1} className="transform -rotate-1">
+            <div className="space-y-8 p-10 bg-background relative overflow-hidden dark:bg-black border-8 border-double border-primary">
+              {/* Persona 5 Style Red Slash */}
+              <div className="absolute top-0 left-0 w-full h-24 bg-primary -skew-y-6 -translate-y-12 z-0" />
+              
+              <div className="text-center relative z-10">
+                <div className="absolute -top-12 -left-12 text-foreground text-8xl font-display opacity-10 italic transform rotate-[-25deg] pointer-events-none dark:text-white">STOLEN</div>
+                <h3 className="text-7xl font-display text-foreground mb-4 tracking-tighter italic uppercase text-shadow-blood dark:text-white">
+                  {t("shop.title")}
+                </h3>
+                <p className="text-primary font-display text-3xl italic font-bold border-y-4 border-primary py-2 inline-block">
+                  {t("shop.subtitle")}
+                </p>
+              </div>
 
-      <div className="max-w-2xl mx-auto relative">
-        <div className="absolute -inset-10 bg-primary/10 clip-path-comic-1 -z-10 halftone-pattern animate-pulse" />
-        <div className="absolute -inset-20 bg-background/40 clip-path-comic-2 -z-20 transform rotate-3 dark:bg-black/40" />
-        
-        <PhantomCard delay={0.1} className="transform -rotate-1">
-          <div className="space-y-8 p-10 bg-background relative overflow-hidden dark:bg-black">
-            {/* Persona 5 Style Red Slash */}
-            <div className="absolute top-0 left-0 w-full h-24 bg-primary -skew-y-6 -translate-y-12 z-0" />
-            
-            <div className="text-center relative z-10">
-              <div className="absolute -top-12 -left-12 text-foreground text-8xl font-display opacity-10 italic transform rotate-[-25deg] pointer-events-none dark:text-white">STOLEN</div>
-              <h3 className="text-7xl font-display text-foreground mb-4 tracking-tighter italic uppercase text-shadow-blood dark:text-white">
-                {t("shop.title")}
-              </h3>
-              <p className="text-primary font-display text-3xl italic font-bold border-y-4 border-primary py-2 inline-block">
-                {t("shop.subtitle")}
-              </p>
-            </div>
+              <div className="grid md:grid-cols-2 gap-12 relative z-10">
+                {/* Left Side: Gamepass Request */}
+                <div className="space-y-6 p-6 border-4 border-primary/30 rounded-lg bg-primary/5">
+                  <h4 className="font-display text-3xl text-primary italic uppercase border-b-4 border-primary pb-2">Direct Heist</h4>
+                  <div className="space-y-4">
+                    <div className="relative group">
+                      <div className="absolute -inset-2 bg-primary/20 clip-path-comic-1 transition-all group-focus-within:bg-primary/40 -z-10" />
+                      <input
+                        type="number"
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                        placeholder="000"
+                        className="w-full bg-background border-4 border-primary p-4 text-5xl text-center text-foreground font-display focus:shadow-[0_0_20px_rgba(255,0,25,0.4)] focus:outline-none transition-all relative z-10 italic dark:bg-black dark:text-white"
+                      />
+                      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-3xl text-primary font-display z-10">
+                        R$
+                      </div>
+                    </div>
 
-            <div className="space-y-6 relative z-10">
-              <div className="space-y-4">
-                <div className="relative group">
-                  <div className="absolute -inset-2 bg-primary/20 clip-path-comic-1 transition-all group-focus-within:bg-primary/40 -z-10" />
-                  <input
-                    type="number"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    placeholder="000"
-                    className="w-full bg-background border-4 border-primary p-4 text-5xl text-center text-foreground font-display focus:shadow-[0_0_20px_rgba(255,0,25,0.4)] focus:outline-none transition-all relative z-10 italic dark:bg-black dark:text-white"
-                  />
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-3xl text-primary font-display z-10">
-                    R$
+                    <div className="relative group">
+                      <div className="absolute -inset-2 bg-primary/20 clip-path-comic-1 transition-all group-focus-within:bg-primary/40 -z-10" />
+                      <input
+                        type="text"
+                        value={gamepassUrl}
+                        onChange={(e) => setGamepassUrl(e.target.value)}
+                        placeholder={t("shop.gamepass_placeholder")}
+                        className="w-full bg-background border-4 border-primary p-4 text-xl text-foreground font-body focus:shadow-[0_0_20px_rgba(255,0,25,0.4)] focus:outline-none transition-all relative z-10 dark:bg-black dark:text-white"
+                      />
+                      <p className="text-xs text-primary mt-1 font-display italic">
+                        {t("shop.gamepass_help")}
+                      </p>
+                    </div>
+
+                    <PhantomButton 
+                      onClick={handleRequestRobux}
+                      disabled={isOrdering}
+                      variant="primary"
+                      className="w-full text-4xl py-8 shadow-[10px_10px_0px_0px_black] dark:shadow-[10px_10px_0px_0px_#FFFFFF] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all"
+                    >
+                      {isOrdering ? t("common.loading") : t("shop.buy")}
+                    </PhantomButton>
                   </div>
                 </div>
 
-                <div className="relative group">
-                  <div className="absolute -inset-2 bg-primary/20 clip-path-comic-1 transition-all group-focus-within:bg-primary/40 -z-10" />
-                  <input
-                    type="text"
-                    value={gamepassUrl}
-                    onChange={(e) => setGamepassUrl(e.target.value)}
-                    placeholder={t("shop.gamepass_placeholder")}
-                    className="w-full bg-background border-4 border-primary p-4 text-xl text-foreground font-body focus:shadow-[0_0_20px_rgba(255,0,25,0.4)] focus:outline-none transition-all relative z-10 dark:bg-black dark:text-white"
-                  />
-                  <p className="text-xs text-primary mt-1 font-display italic">
-                    {t("shop.gamepass_help")}
-                  </p>
+                {/* Right Side: Code Redemption */}
+                <div className="space-y-6 p-6 border-4 border-primary/30 rounded-lg bg-primary/5">
+                  <h4 className="font-display text-3xl text-primary italic uppercase border-b-4 border-primary pb-2">Redeem Code</h4>
+                  <div className="space-y-4">
+                    <div className="relative group">
+                      <div className="absolute -inset-2 bg-primary/20 clip-path-comic-1 -z-10" />
+                      <input
+                        type="text"
+                        placeholder="PHANTOM-XXXX"
+                        value={redeemCode}
+                        onChange={(e) => setRedeemCode(e.target.value)}
+                        className="w-full bg-background border-4 border-primary p-4 text-2xl text-center text-foreground font-display focus:shadow-[0_0_20px_rgba(255,0,25,0.4)] focus:outline-none transition-all relative z-10 italic dark:bg-black dark:text-white"
+                      />
+                    </div>
+                    
+                    <div className="relative group">
+                      <div className="absolute -inset-2 bg-primary/20 clip-path-comic-1 -z-10" />
+                      <input
+                        type="number"
+                        placeholder="Amount"
+                        value={redeemAmount}
+                        onChange={(e) => setRedeemAmount(e.target.value)}
+                        className="w-full bg-background border-4 border-primary p-4 text-2xl text-center text-foreground font-display focus:shadow-[0_0_20px_rgba(255,0,25,0.4)] focus:outline-none transition-all relative z-10 italic dark:bg-black dark:text-white"
+                      />
+                    </div>
+
+                    <PhantomButton 
+                      className="w-full text-4xl py-8 shadow-[10px_10px_0px_0px_black] dark:shadow-[10px_10px_0px_0px_#FFFFFF] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all" 
+                      onClick={handleRedeem} 
+                      disabled={isRedeeming}
+                    >
+                      {isRedeeming ? "REDEEMING..." : "ACTIVATE"}
+                    </PhantomButton>
+                  </div>
                 </div>
               </div>
 
-              <PhantomButton 
-                onClick={handleRequestRobux}
-                disabled={isOrdering}
-                variant="primary"
-                className="w-full text-5xl py-10 shadow-[15px_15px_0px_0px_black] dark:shadow-[15px_15px_0px_0px_#FFFFFF] hover:shadow-[20px_20px_0px_0px_#FFFFFF] transition-all"
-              >
-                {isOrdering ? t("common.loading") : t("shop.buy")}
-              </PhantomButton>
+              <div className="bg-foreground p-8 border-8 border-primary transform rotate-1 relative z-10 dark:bg-white">
+                <p className="text-2xl text-background font-black text-center tracking-tighter uppercase italic dark:text-black">
+                  CAUTION: BLACK MARKET TRADING IS MONITORED BY THE PHANTOM THIEVES
+                </p>
+              </div>
             </div>
-
-            <div className="bg-foreground p-8 border-8 border-primary transform rotate-1 relative z-10 dark:bg-white">
-              <p className="text-2xl text-background font-black text-center tracking-tighter uppercase italic dark:text-black">
-                CAUTION: UNAUTHORIZED TRANSACTION IN PROGRESS
-              </p>
-            </div>
-          </div>
-        </PhantomCard>
+          </PhantomCard>
+        </div>
       </div>
     </div>
   );

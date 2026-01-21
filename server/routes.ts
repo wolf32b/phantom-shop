@@ -254,12 +254,27 @@ export async function registerRoutes(
         });
       }
 
+      // Extract Gamepass ID from URL if provided as URL
+      let gamepassId = input.gamepassUrl;
+      const match = input.gamepassUrl.match(/game-pass\/(\d+)/);
+      if (match) {
+        gamepassId = match[1];
+      }
+
+      // Verification logic: In a real scenario, we'd use Roblox API to check the price
+      // For now, we simulate verification and ensure the request is valid
+      if (!gamepassId.match(/^\d+$/)) {
+        return res.status(400).json({ message: "Invalid Gamepass ID or URL" });
+      }
+
+      console.log(`[ORDER] Verifying gamepass ${gamepassId} for ${input.amount} Robux`);
+
       // @ts-ignore
       const userId = req.user.id;
       const order = await storage.createOrder({
         userId,
         amount: input.amount,
-        gamepassUrl: input.gamepassUrl,
+        gamepassUrl: gamepassId, // Store the ID for easier processing
         status: "pending"
       });
 
