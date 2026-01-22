@@ -261,13 +261,38 @@ export async function registerRoutes(
         gamepassId = match[1];
       }
 
-      // Verification logic: In a real scenario, we'd use Roblox API to check the price
-      // For now, we simulate verification and ensure the request is valid
       if (!gamepassId.match(/^\d+$/)) {
         return res.status(400).json({ message: "Invalid Gamepass ID or URL" });
       }
 
-      console.log(`[ORDER] Verifying gamepass ${gamepassId} for ${input.amount} Robux`);
+      // CALCULATE EXPECTED PRICE (The Price user MUST set on Roblox)
+      const expectedPrice = Math.ceil(input.amount / 0.7);
+
+      // VERIFY PRICE VIA ROBLOX API
+      try {
+        const noblox = require("noblox.js");
+        const productInfo = await noblox.getProductInfo(parseInt(gamepassId));
+        
+        if (!productInfo) {
+          return res.status(400).json({ message: "Could not find Gamepass info. Is it public?" });
+        }
+
+        const actualPrice = productInfo.PriceInRobux;
+        console.log(`[VERIFY] Gamepass ${gamepassId}: Actual Price=${actualPrice}, Expected Price=${expectedPrice}`);
+
+        if (actualPrice !== expectedPrice) {
+          return res.status(400).json({ 
+            message: `Verification Failed: Your Gamepass price is set to ${actualPrice || 0} R$, but it MUST be exactly ${expectedPrice} R$ to receive ${input.amount} R$.`,
+            expected: expectedPrice,
+            actual: actualPrice
+          });
+        }
+      } catch (err) {
+        console.error("[VERIFY] Roblox API Error:", err);
+        return res.status(500).json({ message: "Roblox verification server is busy. Try again in a moment." });
+      }
+
+      console.log(`[ORDER] Verified gamepass ${gamepassId} for ${input.amount} Robux`);
 
       // @ts-ignore
       const userId = req.user.id;
