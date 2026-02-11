@@ -140,6 +140,17 @@ export default function Login() {
           </p>
         </div>
 
+        <div className="mb-6 relative z-10">
+          <PhantomButton
+            type="button"
+            onClick={() => (window.location.href = "/api/login")}
+            className="w-full text-2xl py-4 shadow-[8px_8px_0px_0px_#fff]"
+          >
+            CONTINUE WITH GOOGLE
+          </PhantomButton>
+          <div className="text-center text-white/50 font-body mt-3 italic">or use codename login below</div>
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-5 relative z-10">
           <div>
             <label className="block text-white-p5 font-display text-sm uppercase tracking-widest mb-2">

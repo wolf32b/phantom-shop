@@ -6,7 +6,6 @@ import { useRobuxCounter } from "@/hooks/use-stats";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
 import { useState } from "react";
-import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useLanguage } from "@/lib/LanguageContext";
 
 export default function Shop() {
@@ -18,7 +17,6 @@ export default function Shop() {
   const [amount, setAmount] = useState<string>("");
   const [gamepassUrl, setGamepassUrl] = useState<string>("");
   const [redeemCode, setRedeemCode] = useState("");
-  const [isRedeeming, setIsRedeeming] = useState(false);
 
   // Tax Calculator Logic
   const desiredAmount = parseInt(amount) || 0;
@@ -46,18 +44,8 @@ export default function Shop() {
       return;
     }
 
-    setIsRedeeming(true);
     try {
-      // Step 1: Verify/Redeem Code balance first
-      const redeemRes = await apiRequest("POST", "/api/codes/redeem", { 
-        code: redeemCode, 
-        amount: desiredAmount 
-      });
-      
-      if (!redeemRes.ok) throw new Error("Code invalid or insufficient balance");
-
-      // Step 2: Create the order
-      createOrder({ amount: desiredAmount, gamepassUrl }, {
+      createOrder({ amount: desiredAmount, gamepassUrl, phantomCode: redeemCode }, {
         onSuccess: () => {
           toast({
             title: "HEIST SUCCESSFUL",
@@ -75,7 +63,6 @@ export default function Shop() {
     } catch (err: any) {
       toast({ title: "Heist Failed", description: err.message, variant: "destructive" });
     } finally {
-      setIsRedeeming(false);
     }
   };
 
@@ -99,7 +86,7 @@ export default function Shop() {
               
               <div className="text-center relative z-10">
                 <h3 className="text-7xl font-display text-foreground mb-4 tracking-tighter italic uppercase text-shadow-blood dark:text-white">
-                  BLACK MARKET TERMINAL
+                  ORDER ROBUX
                 </h3>
               </div>
 
@@ -166,11 +153,11 @@ export default function Shop() {
                 {/* Final Step: Purchase */}
                 <PhantomButton 
                   onClick={handleHeist}
-                  disabled={isOrdering || isRedeeming}
+                  disabled={isOrdering}
                   variant="primary"
                   className="w-full text-5xl py-12 shadow-[15px_15px_0px_0px_black] dark:shadow-[15px_15px_0px_0px_#FFFFFF] hover:translate-x-2 hover:translate-y-2 hover:shadow-none transition-all"
                 >
-                  {isOrdering || isRedeeming ? "PROCESSING..." : "EXECUTE HEIST"}
+                  {isOrdering ? "PROCESSING..." : "Buy robux"}
                 </PhantomButton>
               </div>
 

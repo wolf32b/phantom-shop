@@ -16,11 +16,140 @@ const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SEC
 
 import { getSession } from "./replit_integrations/auth";
 import passport from "passport";
+import memoize from "memoizee";
+import * as client from "openid-client";
+import { Strategy as OIDCStrategy, type VerifyFunction } from "openid-client/passport";
 
 function generateVerificationCode(): string {
   return Math.random().toString().substring(2, 8);
 }
 
+
+
+const getGoogleOidcConfig = memoize(
+  async () => {
+    return await client.discovery(new URL("https://accounts.google.com"), process.env.GOOGLE_CLIENT_ID!);
+  },
+  { maxAge: 3600 * 1000 }
+);
+
+function parseAdminEmails(): Set<string> {
+  const raw = (process.env.ADMIN_EMAILS || "").split(",").map(s => s.trim().toLowerCase()).filter(Boolean);
+  return new Set(raw);
+}
+
+async function ensureUniqueUsername(baseUsername: string): Promise<string> {
+  const clean = baseUsername.toLowerCase().replace(/[^a-z0-9_]/g, "_").replace(/_+/g, "_").replace(/^_+|_+$/g, "");
+  let candidate = clean || "phantom";
+  for (let i = 0; i < 5; i++) {
+    const exists = await db.select().from(users).where(eq(users.username, candidate)).limit(1);
+    if (exists.length === 0) return candidate;
+    candidate = `${clean || "phantom"}_${Math.floor(1000 + Math.random() * 9000)}`;
+  }
+  return `${clean || "phantom"}_${Date.now().toString().slice(-6)}`;
+}
+
+async function upsertGoogleUser(claims: any) {
+  const email = (claims?.email || "").toLowerCase();
+  const adminEmails = parseAdminEmails();
+  const isAdmin = adminEmails.has(email);
+
+  const existing = await db.select().from(users).where(eq(users.email, email)).limit(1);
+  if (existing.length > 0) {
+    const [u] = existing;
+    await db.update(users).set({
+      firstName: claims?.given_name ?? u.firstName,
+      lastName: claims?.family_name ?? u.lastName,
+      profileImageUrl: claims?.picture ?? u.profileImageUrl,
+      isEmailVerified: true,
+      isAdmin: u.isAdmin || isAdmin,
+      updatedAt: new Date(),
+    }).where(eq(users.id, u.id));
+    const updated = await db.select().from(users).where(eq(users.id, u.id)).limit(1);
+    return updated[0];
+  }
+
+  const usernameBase = (claims?.name || email.split("@")[0] || "phantom").toString().slice(0, 20);
+  const username = await ensureUniqueUsername(usernameBase);
+
+  const inserted = await db.insert(users).values({
+    id: claims?.sub,
+    email,
+    username,
+    firstName: claims?.given_name,
+    lastName: claims?.family_name,
+    profileImageUrl: claims?.picture,
+    isEmailVerified: true,
+    robuxBalance: 0,
+    isAdmin,
+  }).returning();
+
+  return inserted[0];
+}
+
+async function setupGoogleAuth(app: Express) {
+  if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+    console.warn("[AUTH] GOOGLE_CLIENT_ID/GOOGLE_CLIENT_SECRET not set. Google login disabled.");
+    return;
+  }
+
+  const config = await getGoogleOidcConfig();
+
+  const verify: VerifyFunction = async (tokens, verified) => {
+    try {
+      const claims = tokens.claims();
+      const user = await upsertGoogleUser(claims);
+      verified(null, user);
+    } catch (err) {
+      verified(err as any);
+    }
+  };
+
+  const registeredStrategies = new Set<string>();
+  const ensureStrategy = (req: any) => {
+    const domain = req.get("host") || req.hostname;
+    const strategyName = `google:${domain}`;
+    if (registeredStrategies.has(strategyName)) return;
+    const strategy = new OIDCStrategy(
+      {
+        name: strategyName,
+        config,
+        scope: "openid email profile",
+        callbackURL: `${req.protocol}://${domain}/api/callback-google`,
+        client_id: process.env.GOOGLE_CLIENT_ID!,
+        client_secret: process.env.GOOGLE_CLIENT_SECRET!,
+      } as any,
+      verify
+    );
+    passport.use(strategy);
+    registeredStrategies.add(strategyName);
+  };
+
+  app.get("/api/login", (req, res, next) => {
+    ensureStrategy(req);
+    passport.authenticate(`google:${req.hostname}`)(req, res, next);
+  });
+
+  app.get("/api/callback-google", (req, res, next) => {
+    ensureStrategy(req);
+    passport.authenticate(`google:${req.hostname}`, {
+      successReturnToOrRedirect: "/",
+      failureRedirect: "/login",
+    })(req, res, next);
+  });
+
+  app.get("/api/logout", (req, res) => {
+    req.logout(() => {
+      res.redirect("/");
+    });
+  });
+}
+
+function requireAdmin(req: any, res: any, next: any) {
+  if (!req.isAuthenticated || !req.isAuthenticated()) return res.sendStatus(401);
+  if (!req.user || !(req.user as any).isAdmin) return res.status(403).json({ message: "Forbidden" });
+  next();
+}
 export async function registerRoutes(
   httpServer: Server,
   app: Express
@@ -210,6 +339,10 @@ export async function registerRoutes(
   app.use(passport.initialize());
   app.use(passport.session());
 
+  // Google Login (default)
+  await setupGoogleAuth(app);
+
+
   // Set up Replit Auth
   // await setupAuth(app); // Commenting out to prioritize custom auth session management
 
@@ -245,44 +378,54 @@ export async function registerRoutes(
 
     try {
       const input = insertOrderSchema.parse(req.body);
+
+      // Phantom Code checks
+      const phantomCode = await storage.getPhantomCode(input.phantomCode);
+      if (!phantomCode) {
+        return res.status(404).json({ message: "Phantom Code not found" });
+      }
+      if (!phantomCode.isPaid) {
+        return res.status(400).json({ message: "This Phantom Code is not paid yet." });
+      }
+      if (phantomCode.remainingAmount < input.amount) {
+        return res.status(400).json({ message: "Insufficient balance in Phantom Code." });
+      }
+
       const currentRobux = await storage.getGlobalStat('total_robux');
-      
       if (input.amount > currentRobux) {
         return res.status(400).json({ 
-          message: "Insufficient Robux in the global pool.",
+          message: "Insufficient Robux in the global pool. Try again later.",
           field: "amount"
         });
       }
 
-      // Extract Gamepass ID from URL if provided as URL
-      let gamepassId = input.gamepassUrl;
+      // Extract Gamepass ID from URL
       const match = input.gamepassUrl.match(/game-pass\/(\d+)/);
-      if (match) {
-        gamepassId = match[1];
-      }
+      const gamepassId = match?.[1];
 
-      if (!gamepassId.match(/^\d+$/)) {
-        return res.status(400).json({ message: "Invalid Gamepass ID or URL" });
+      if (!gamepassId || !gamepassId.match(/^\d+$/)) {
+        return res.status(400).json({ message: "Invalid Gamepass URL" });
       }
 
       // CALCULATE EXPECTED PRICE (The Price user MUST set on Roblox)
       const expectedPrice = Math.ceil(input.amount / 0.7);
 
       // VERIFY PRICE VIA ROBLOX API
+      let actualPrice = 0;
       try {
         const noblox = require("noblox.js");
         const productInfo = await noblox.getProductInfo(parseInt(gamepassId));
-        
+
         if (!productInfo) {
           return res.status(400).json({ message: "Could not find Gamepass info. Is it public?" });
         }
 
-        const actualPrice = productInfo.PriceInRobux;
+        actualPrice = productInfo.PriceInRobux || 0;
         console.log(`[VERIFY] Gamepass ${gamepassId}: Actual Price=${actualPrice}, Expected Price=${expectedPrice}`);
 
         if (actualPrice !== expectedPrice) {
           return res.status(400).json({ 
-            message: `Verification Failed: Your Gamepass price is set to ${actualPrice || 0} R$, but it MUST be exactly ${expectedPrice} R$ to receive ${input.amount} R$.`,
+            message: `Verification Failed: Your Gamepass price is set to ${actualPrice} R$, but it MUST be exactly ${expectedPrice} R$ to receive ${input.amount} R$.`,
             expected: expectedPrice,
             actual: actualPrice
           });
@@ -292,33 +435,38 @@ export async function registerRoutes(
         return res.status(500).json({ message: "Roblox verification server is busy. Try again in a moment." });
       }
 
-      console.log(`[ORDER] Verified gamepass ${gamepassId} for ${input.amount} Robux`);
+      // Reserve funds from code (so user can't double spend)
+      await storage.updatePhantomCodeAmount(phantomCode.id, phantomCode.remainingAmount - input.amount);
 
       // @ts-ignore
       const userId = req.user.id;
       const order = await storage.createOrder({
         userId,
         amount: input.amount,
-        gamepassUrl: gamepassId, // Store the ID for easier processing
-        status: "pending"
+        phantomCode: input.phantomCode,
+        gamepassUrl: input.gamepassUrl,
+        gamepassId,
+        expectedPrice,
+        actualPrice,
+        status: "pending_admin"
+      } as any);
+
+      await storage.createNotification({
+        userId,
+        title: "Request Submitted",
+        message: `Your request is now in the Admin Panel queue. (Order #${order.id})`,
+        type: "info"
       });
 
-      // Deduct from global pool
-      await storage.setGlobalStat('total_robux', currentRobux - input.amount);
-
       res.status(201).json(order);
-    } catch (err) {
-      if (err instanceof z.ZodError) {
-        return res.status(400).json({
-          message: err.errors[0].message,
-          field: err.errors[0].path.join('.'),
-        });
+    } catch (error: any) {
+      console.error("Create order error:", error);
+      if (error?.issues) {
+        return res.status(400).json({ message: error.issues?.[0]?.message || "Invalid input" });
       }
-      res.status(500).json({ message: "Heist failed." });
+      res.status(500).json({ message: "Order creation failed" });
     }
-  });
-
-  app.get(api.orders.list.path, async (req, res) => {
+  });app.get(api.orders.list.path, async (req, res) => {
     if (!req.isAuthenticated()) {
       return res.status(401).json({ message: "غير مصرح لك بالدخول" });
     }
@@ -326,6 +474,55 @@ export async function registerRoutes(
     const orders = await storage.getOrdersForUser(req.user.id);
     res.json(orders);
   });
+
+  
+
+  // Admin Panel API
+  app.get("/api/admin/orders", requireAdmin, async (_req, res) => {
+    const orders = await storage.getPendingOrders();
+    res.json(orders);
+  });
+
+  app.post("/api/admin/orders/:id/approve", requireAdmin, async (req, res) => {
+    const orderId = parseInt(req.params.id);
+    const order = await storage.getOrderById(orderId);
+    if (!order) return res.status(404).json({ message: "Order not found" });
+
+    await storage.updateOrderStatus(orderId, "approved", (req.body?.note || null));
+
+    await storage.createNotification({
+      userId: order.userId,
+      title: "Heist Approved",
+      message: `Admin approved your request for ${order.amount} Robux. Enjoy!`,
+      type: "success"
+    });
+
+    res.json({ success: true });
+  });
+
+  app.post("/api/admin/orders/:id/reject", requireAdmin, async (req, res) => {
+    const orderId = parseInt(req.params.id);
+    const order = await storage.getOrderById(orderId);
+    if (!order) return res.status(404).json({ message: "Order not found" });
+
+    // Refund reserved code balance
+    const phantom = await storage.getPhantomCode((order as any).phantomCode);
+    if (phantom) {
+      await storage.updatePhantomCodeAmount(phantom.id, phantom.remainingAmount + order.amount);
+    }
+
+    await storage.updateOrderStatus(orderId, "rejected", (req.body?.note || null));
+
+    await storage.createNotification({
+      userId: order.userId,
+      title: "Heist Rejected",
+      message: `Your request was rejected. Your Phantom Code balance was refunded.`,
+      type: "error"
+    });
+
+    res.json({ success: true });
+  });
+
 
   app.get(api.users.me.path, async (req, res) => {
     if (!req.isAuthenticated()) {

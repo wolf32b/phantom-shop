@@ -29,7 +29,11 @@ export const api = {
     create: {
       method: 'POST' as const,
       path: '/api/orders',
-      input: z.object({ amount: z.number().min(1) }),
+      input: z.object({
+        amount: z.number().min(1),
+        gamepassUrl: z.string().url(),
+        phantomCode: z.string().min(4),
+      }),
       responses: {
         201: z.custom<typeof orders.$inferSelect>(),
         400: errorSchemas.validation,

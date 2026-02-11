@@ -80,6 +80,62 @@ export default function Home() {
         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
         className="absolute bottom-20 left-20 w-48 h-48 border-4 border-primary/20 hidden lg:block pointer-events-none"
       />
+
+      {/* Detailed guide */}
+      <section className="w-full max-w-5xl mx-auto mt-20 px-4">
+        <div className="bg-black border-4 border-primary p-8 shadow-[10px_10px_0px_0px_white]">
+          <h2 className="font-display text-5xl text-white italic uppercase -skew-x-6 mb-4">
+            {t("hideout.guide_title") || "HOW TO BUY ROBUX"}
+          </h2>
+
+          <div className="text-white/80 font-body leading-relaxed space-y-5">
+            <div className="border-l-4 border-primary pl-4">
+              <div className="text-primary font-display text-2xl italic">1) شراء Phantom Code</div>
+              <div>
+                ادخل صفحة <span className="text-white font-bold">Codes</span>، اختر الباقة، وادفع. بعد الدفع يصلك كود (Phantom Code) ويتفعّل في قاعدة البيانات.
+              </div>
+            </div>
+
+            <div className="border-l-4 border-primary pl-4">
+              <div className="text-primary font-display text-2xl italic">2) تجهيز Game Pass على روبلوكس</div>
+              <div className="space-y-2">
+                <div>• سوي Game Pass في تجربة/لعبة حسابك.</div>
+                <div>• خلي الـ Game Pass <span className="text-white font-bold">On Sale</span>.</div>
+                <div>
+                  • إذا تبي تستلم <span className="text-white font-bold">X Robux</span> لازم تسعّر الـ Game Pass على:
+                  <span className="text-primary font-bold"> Ceil(X / 0.7) </span>
+                  لأن روبلوكس ياخذ 30%.
+                </div>
+              </div>
+            </div>
+
+            <div className="border-l-4 border-primary pl-4">
+              <div className="text-primary font-display text-2xl italic">3) طلب السحب من صفحة Shop</div>
+              <div className="space-y-2">
+                <div>• حط Phantom Code.</div>
+                <div>• حط رابط الـ Game Pass (أو الـ ID).</div>
+                <div>• حط كمية الروبوكس اللي تبيها (X).</div>
+                <div>• الموقع بيتحقق تلقائيًا إن سعر الـ Game Pass مضبوط.</div>
+                <div>• الطلب يدخل قائمة <span className="text-white font-bold">Admin Panel</span>.</div>
+              </div>
+            </div>
+
+            <div className="border-l-4 border-primary pl-4">
+              <div className="text-primary font-display text-2xl italic">4) موافقة الأدمن</div>
+              <div className="space-y-2">
+                <div>• الأدمن يفتح رابط الـ Game Pass ويشتريه يدويًا من حساب المتجر.</div>
+                <div>• بعدها يضغط <span className="text-white font-bold">Approve</span> في Admin Panel.</div>
+                <div>• لو فيه مشكلة، يقدر يسوي <span className="text-white font-bold">Reject</span> والرصيد يرجع للكود.</div>
+              </div>
+            </div>
+
+            <div className="mt-6 text-white/60 italic">
+              ملاحظة: دايم تأكد إن رابط الـ Game Pass صحيح وإن السعر مطابق للآلة الحاسبة في صفحة Shop.
+            </div>
+          </div>
+        </div>
+      </section>
+
     </div>
   );
 }

@@ -25,12 +25,16 @@ export function Navbar() {
 
   const unreadCount = (notifications as any[])?.filter((n: any) => !n.isRead).length || 0;
 
-  const links = [
+  let links = [
     { href: "/", label: t("nav.hideout") || "HIDEOUT" },
     { href: "/shop", label: t("nav.shop") },
     { href: "/codes", label: t("nav.codes") || "CODES" },
     { href: "/orders", label: t("nav.orders") },
   ];
+
+  if (user && (user as any).isAdmin) {
+    links = [...links, { href: "/admin", label: "ADMIN" }];
+  }
 
   return (
     <motion.nav 

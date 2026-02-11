@@ -18,7 +18,7 @@ export function useOrders() {
 export function useCreateOrder() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (data: { amount: number; gamepassUrl: string }) => {
+    mutationFn: async (data: { amount: number; gamepassUrl: string; phantomCode: string }) => {
       const res = await fetch(api.orders.create.path, {
         method: api.orders.create.method,
         headers: { "Content-Type": "application/json" },

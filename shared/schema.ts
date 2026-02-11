@@ -14,17 +14,28 @@ export const globalStats = pgTable("global_stats", {
 export const orders = pgTable("orders", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").notNull(),
-  amount: integer("amount").notNull(),
-  gamepassUrl: text("gamepass_url").notNull(),
-  status: text("status").notNull().default("pending"),
+  amount: integer("amount").notNull(), // Robux the user will receive
+  phantomCode: text("phantom_code").notNull(),
+  gamepassUrl: text("gamepass_url").notNull(), // full URL the user submitted
+  gamepassId: text("gamepass_id").notNull(), // extracted numeric id
+  expectedPrice: integer("expected_price").notNull(), // the price user must set (after 30% fee)
+  actualPrice: integer("actual_price").notNull(), // verified price on Roblox
+  status: text("status").notNull().default("pending_admin"),
+  adminNote: text("admin_note"),
   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
+
 
 export const insertOrderSchema = createInsertSchema(orders).omit({ 
   id: true, 
-  createdAt: true 
+  createdAt: true,
+  updatedAt: true,
+  status: true,
+  adminNote: true,
 }).extend({
   gamepassUrl: z.string().url("Invalid gamepass URL"),
+  phantomCode: z.string().min(4, "Invalid Phantom Code"),
   amount: z.number().min(1, "Amount must be at least 1"),
 });
 

@@ -71,6 +71,9 @@ export interface IStorage {
   
   createOrder(order: InsertOrder): Promise<Order>;
   getOrdersForUser(userId: string): Promise<Order[]>;
+  getOrderById(id: number): Promise<Order | undefined>;
+  getPendingOrders(): Promise<Order[]>;
+  updateOrderStatus(id: number, status: string, adminNote?: string | null): Promise<void>;
 
   createNotification(notification: InsertNotification): Promise<Notification>;
   getNotificationsForUser(userId: string): Promise<Notification[]>;
@@ -98,53 +101,28 @@ export class DatabaseStorage implements IStorage {
 
   async createOrder(order: InsertOrder): Promise<Order> {
     const [newOrder] = await db.insert(orders).values(order).returning();
-    
-    // Trigger automated purchase in background
-    if (ROBLOX_COOKIE) {
-      this.automatePurchase(newOrder).catch(err => {
-        console.error(`[ROBLOX] Automated purchase failed for order ${newOrder.id}:`, err);
-      });
-    }
-    
     return newOrder;
-  }
-
-  private async automatePurchase(order: Order) {
-    try {
-      console.log(`[ROBLOX] Attempting to automate purchase for Order #${order.id} (${order.amount} Robux)`);
-      
-      const match = order.gamepassUrl.match(/game-pass\/(\d+)/);
-      if (!match) throw new Error("Invalid gamepass URL format");
-      const gamepassId = parseInt(match[1]);
-
-      // Use noblox to buy the gamepass
-      // Note: noblox.buy() is the standard method for purchasing items
-      await noblox.buy(gamepassId);
-      
-      console.log(`[ROBLOX] Automated purchase successful for gamepass ${gamepassId}.`);
-      
-      await db.update(orders).set({ status: "completed" }).where(eq(orders.id, order.id));
-      await this.createNotification({
-        userId: order.userId,
-        title: "Heist Successful",
-        message: `The Phantom Thieves have successfully transferred ${order.amount} Robux to your account!`,
-        type: "success"
-      });
-      
-    } catch (err) {
-      console.error("[ROBLOX] Automation error:", err);
-      await db.update(orders).set({ status: "failed" }).where(eq(orders.id, order.id));
-      await this.createNotification({
-        userId: order.userId,
-        title: "Heist Failed",
-        message: `Automation error: ${err instanceof Error ? err.message : 'Unknown error'}. Please contact support.`,
-        type: "error"
-      });
-    }
   }
 
   async getOrdersForUser(userId: string): Promise<Order[]> {
     return await db.select().from(orders).where(eq(orders.userId, userId));
+  }
+
+  async getOrderById(id: number): Promise<Order | undefined> {
+    const [order] = await db.select().from(orders).where(eq(orders.id, id));
+    return order;
+  }
+
+  async getPendingOrders(): Promise<Order[]> {
+    return await db.select().from(orders).where(eq(orders.status, "pending_admin"));
+  }
+
+  async updateOrderStatus(id: number, status: string, adminNote?: string | null): Promise<void> {
+    await db.update(orders).set({ 
+      status, 
+      adminNote: adminNote ?? null,
+      updatedAt: new Date(),
+    }).where(eq(orders.id, id));
   }
 
   async createNotification(notification: InsertNotification): Promise<Notification> {

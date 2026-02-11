@@ -9,6 +9,7 @@ import Home from "@/pages/Home";
 import Shop from "@/pages/Shop";
 import Codes from "@/pages/Codes";
 import Orders from "@/pages/Orders";
+import AdminPanel from "@/pages/AdminPanel";
 import Login from "@/pages/Login";
 import NotFound from "@/pages/not-found";
 import { ThemeProvider } from "next-themes";
@@ -22,6 +23,7 @@ function Router() {
       <Route path="/shop" component={Shop} />
       <Route path="/codes" component={Codes} />
       <Route path="/orders" component={Orders} />
+      <Route path="/admin" component={AdminPanel} />
       <Route path="/login" component={Login} />
       <Route component={NotFound} />
     </Switch>
