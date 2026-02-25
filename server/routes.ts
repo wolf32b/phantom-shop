@@ -121,7 +121,7 @@ async function setupGoogleAuth(app: Express) {
       } as any,
       verify
     );
-    passport.use(strategy);
+    passport.use(strategyName, strategy);
     registeredStrategies.add(strategyName);
   };
 
@@ -133,7 +133,7 @@ async function setupGoogleAuth(app: Express) {
   app.get("/api/callback-google", (req, res, next) => {
     ensureStrategy(req);
     passport.authenticate(`google:${req.hostname}`, {
-      successReturnToOrRedirect: "/",
+      successRedirect: "/",
       failureRedirect: "/login",
     })(req, res, next);
   });
