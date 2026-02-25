@@ -115,7 +115,7 @@ async function setupGoogleAuth(app: Express) {
         name: strategyName,
         config,
         scope: "openid email profile",
-        callbackURL: `${req.protocol}://${domain}/api/callback-google`,
+        callbackURL: `https://${domain}/api/callback-google`,
         client_id: process.env.GOOGLE_CLIENT_ID!,
         client_secret: process.env.GOOGLE_CLIENT_SECRET!,
       } as any,
