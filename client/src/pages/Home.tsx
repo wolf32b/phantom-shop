@@ -6,10 +6,22 @@ import { useLanguage } from "@/lib/LanguageContext";
 
 export default function Home() {
   const { data: user } = useUser();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   return (
     <div className="min-h-[80vh] flex flex-col items-center justify-center relative overflow-hidden px-4">
+      {user && (
+        <motion.div
+          initial={{ y: -50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="mb-8 p-4 bg-white dark:bg-black border-4 border-primary clip-path-comic-1 shadow-[8px_8px_0px_0px_rgba(255,0,0,1)] z-20"
+        >
+          <h2 className="font-display text-3xl text-primary italic uppercase tracking-tighter">
+            {language === 'ar' ? `مرحباً بعودتك، ${user.username}` : `WELCOME BACK, ${user.username}`}
+            {user.isAdmin && <span className="ml-2 text-white bg-primary px-2 text-sm not-italic">ADMIN</span>}
+          </h2>
+        </motion.div>
+      )}
       {/* Dynamic Background Elements */}
       <motion.div 
         initial={{ opacity: 0, scale: 0.8 }}

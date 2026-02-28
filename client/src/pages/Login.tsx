@@ -50,11 +50,13 @@ export default function Login() {
           return;
         }
 
+        // Force a hard refresh of the user data
+        await queryClient.resetQueries({ queryKey: ["/api/user"] });
         await queryClient.invalidateQueries({ queryKey: ["/api/user"] });
 
         toast({
           title: "SUCCESS",
-          description: "Welcome back!",
+          description: `Welcome back, ${data.user?.username || username}!`,
           className: "bg-black border-2 border-primary text-white font-display",
         });
 
@@ -143,7 +145,10 @@ export default function Login() {
         <div className="mb-6 relative z-10">
           <PhantomButton
             type="button"
-            onClick={() => (window.location.href = "/api/login")}
+            onClick={() => {
+              toast({ title: "REDIRECTING", description: "Taking you to Google Secure Login..." });
+              window.location.href = "/api/login";
+            }}
             className="w-full text-2xl py-4 shadow-[8px_8px_0px_0px_#fff]"
           >
             CONTINUE WITH GOOGLE

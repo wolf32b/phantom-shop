@@ -535,7 +535,19 @@ export async function registerRoutes(
     if (!req.isAuthenticated()) {
       return res.status(401).json({ message: "لم يتم تسجيل الدخول" });
     }
-    res.json(req.user);
+    // Return a clean user object
+    const user = req.user as any;
+    res.json({
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      profileImageUrl: user.profileImageUrl,
+      robuxBalance: user.robuxBalance,
+      isAdmin: user.isAdmin,
+      isEmailVerified: user.isEmailVerified
+    });
   });
 
   app.get(api.stats.getRobuxCounter.path, async (req, res) => {

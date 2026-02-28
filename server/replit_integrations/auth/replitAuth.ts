@@ -39,6 +39,7 @@ export function getSession() {
       sameSite: "none",
       maxAge: sessionTtl,
       path: "/",
+      domain: process.env.REPLIT_DEV_DOMAIN ? `.${process.env.REPLIT_DEV_DOMAIN.split('.').slice(1).join('.')}` : undefined
     },
   });
 }

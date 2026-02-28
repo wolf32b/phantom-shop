@@ -3,13 +3,14 @@ import { api } from "@shared/routes";
 
 export function useUser() {
   return useQuery({
-    queryKey: [api.users.me.path],
+    queryKey: ["/api/user"],
     queryFn: async () => {
-      const res = await fetch(api.users.me.path, { credentials: "include" });
+      const res = await fetch("/api/user", { credentials: "include" });
       if (res.status === 401) return null;
       if (!res.ok) throw new Error("Failed to fetch user");
-      return api.users.me.responses[200].parse(await res.json());
+      return await res.json();
     },
     retry: false,
+    staleTime: 0, // Always consider data stale to ensure refresh
   });
 }
