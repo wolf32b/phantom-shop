@@ -35,8 +35,8 @@ export function getSession() {
     proxy: true,
     cookie: {
       httpOnly: true,
-      secure: false, 
-      sameSite: "lax",
+      secure: true, 
+      sameSite: "none",
       maxAge: sessionTtl,
       path: "/",
     },
