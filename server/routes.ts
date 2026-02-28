@@ -271,7 +271,13 @@ export async function registerRoutes(
             console.error("req.login error:", err);
             return res.status(500).json({ message: "Login failed" });
           }
-          res.json({ success: true, user: user[0] });
+          req.session.save((err) => {
+            if (err) {
+              console.error("session save error:", err);
+              return res.status(500).json({ message: "Session save failed" });
+            }
+            res.json({ success: true, user: user[0] });
+          });
         });
       } else if ((req as any).logIn) {
         (req as any).logIn(user[0], (err: any) => {
@@ -279,7 +285,13 @@ export async function registerRoutes(
             console.error("req.logIn error:", err);
             return res.status(500).json({ message: "Login failed" });
           }
-          res.json({ success: true, user: user[0] });
+          req.session.save((err) => {
+            if (err) {
+              console.error("session save error:", err);
+              return res.status(500).json({ message: "Session save failed" });
+            }
+            res.json({ success: true, user: user[0] });
+          });
         });
       } else {
         res.json({ success: true, user: user[0] });
@@ -330,14 +342,20 @@ export async function registerRoutes(
           if (err) {
             return res.status(500).json({ message: "Login failed" });
           }
-          res.json({ success: true, user: user[0] });
+          req.session.save((err) => {
+            if (err) return res.status(500).json({ message: "Session save failed" });
+            res.json({ success: true, user: user[0] });
+          });
         });
       } else if (req.login) {
         req.login(user[0], (err) => {
           if (err) {
             return res.status(500).json({ message: "Login failed" });
           }
-          res.json({ success: true, user: user[0] });
+          req.session.save((err) => {
+            if (err) return res.status(500).json({ message: "Session save failed" });
+            res.json({ success: true, user: user[0] });
+          });
         });
       } else {
         res.json({ success: true, user: user[0] });
