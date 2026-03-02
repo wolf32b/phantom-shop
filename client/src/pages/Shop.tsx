@@ -92,28 +92,34 @@ export default function Shop() {
 
               <div className="grid gap-8 relative z-10">
                 {/* Step 1: The Code */}
-                <div className="p-6 border-4 border-primary rounded-lg bg-primary/5 hover:bg-primary/10 transition-colors">
-                  <h4 className="font-display text-2xl text-primary italic mb-4">01. PHANTOM CODE</h4>
+                <motion.div 
+                  whileHover={{ scale: 1.02 }}
+                  className="p-6 border-4 border-primary rounded-lg bg-primary/5 hover:bg-primary/10 transition-colors shadow-[8px_8px_0px_0px_rgba(255,0,0,0.2)]"
+                >
+                  <h4 className="font-display text-3xl text-primary italic mb-4 uppercase tracking-tighter">01. PHANTOM CODE</h4>
                   <input
                     type="text"
                     placeholder="PHANTOM-XXXX-XXXX"
                     value={redeemCode}
                     onChange={(e) => setRedeemCode(e.target.value)}
-                    className="w-full bg-background border-4 border-primary p-4 text-2xl text-foreground font-display focus:outline-none dark:bg-black dark:text-white uppercase"
+                    className="w-full bg-background border-4 border-primary p-5 text-3xl text-foreground font-display focus:outline-none dark:bg-black dark:text-white uppercase placeholder:opacity-30"
                   />
-                </div>
+                </motion.div>
 
                 {/* Step 2: Gamepass */}
-                <div className="p-6 border-4 border-primary rounded-lg bg-primary/5 hover:bg-primary/10 transition-colors">
-                  <h4 className="font-display text-2xl text-primary italic mb-4">02. TARGET GAMEPASS (ID)</h4>
+                <motion.div 
+                  whileHover={{ scale: 1.02 }}
+                  className="p-6 border-4 border-primary rounded-lg bg-primary/5 hover:bg-primary/10 transition-colors shadow-[8px_8px_0px_0px_rgba(255,0,0,0.2)]"
+                >
+                  <h4 className="font-display text-3xl text-primary italic mb-4 uppercase tracking-tighter">02. TARGET GAMEPASS (ID)</h4>
                   <input
                     type="text"
                     value={gamepassUrl}
                     onChange={(e) => setGamepassUrl(e.target.value)}
                     placeholder="Enter Gamepass ID or URL"
-                    className="w-full bg-background border-4 border-primary p-4 text-xl text-foreground font-body focus:outline-none dark:bg-black dark:text-white"
+                    className="w-full bg-background border-4 border-primary p-5 text-xl text-foreground font-body focus:outline-none dark:bg-black dark:text-white placeholder:opacity-30"
                   />
-                </div>
+                </motion.div>
 
                 {/* Step 3: Amount & Calculator */}
                 <div className="grid md:grid-cols-2 gap-8">

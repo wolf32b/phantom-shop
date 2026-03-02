@@ -38,10 +38,15 @@ const translations = {
     "auth.email": "Email",
     "auth.verify_btn": "Verify",
     "common.loading": "Processing...",
-    "common.success": "Success",
-    "common.error": "Error"
-  },
-  ar: {
+    "home.guide_1_title": "1) PURCHASE PHANTOM CODE",
+    "home.guide_1_desc": "Visit the Codes page, choose your pack, and complete the transaction. Your unique Phantom Code will be activated instantly.",
+    "home.guide_2_title": "2) PREPARE YOUR GAMEPASS",
+    "home.guide_2_desc": "Create a Gamepass in your Roblox experience. Set it to 'On Sale'. To receive X Robux, you MUST set the price to Ceil(X / 0.7) to account for the 30% Roblox tax.",
+    "home.guide_3_title": "3) SUBMIT HEIST REQUEST",
+    "home.guide_3_desc": "Go to the Shop, enter your Phantom Code, your Gamepass ID, and the amount. Our system will verify the price automatically.",
+    "home.guide_4_title": "4) ADMIN APPROVAL",
+    "home.guide_4_desc": "Our admins will purchase your Gamepass manually. Once approved, you'll receive a notification and your Robux will be pending in your Roblox account.",
+    "home.guide_note": "Note: Always ensure your Gamepass is public and the price matches the calculator exactly.",
     "nav.hideout": "المخبأ",
     "nav.shop": "المتجر",
     "nav.orders": "الطلبات",
@@ -70,7 +75,16 @@ const translations = {
     "auth.verify_btn": "تأكيد",
     "common.loading": "جاري المعالجة...",
     "common.success": "نجاح",
-    "common.error": "خطأ"
+    "common.error": "خطأ",
+    "home.guide_1_title": "1) شراء PHANTOM CODE",
+    "home.guide_1_desc": "قم بزيارة صفحة الأكواد، اختر باقتك، وأكمل عملية الدفع. سيتم تفعيل كود فانتوم الخاص بك فوراً.",
+    "home.guide_2_title": "2) تجهيز الجيم باس",
+    "home.guide_2_desc": "أنشئ Gamepass في تجربتك على روبلوكس واجعله معروضاً للبيع. لاستلام X روبوكس، يجب عليك تعيين السعر على Ceil(X / 0.7) لتعويض ضريبة روبلوكس (30%).",
+    "home.guide_3_title": "3) تقديم طلب السحب",
+    "home.guide_3_desc": "انتقل للمتجر، أدخل كود فانتوم، رقم الجيم باس، والكمية. سيقوم نظامنا بالتحقق من السعر تلقائياً.",
+    "home.guide_4_title": "4) موافقة الإدارة",
+    "home.guide_4_desc": "سيقوم المشرفون بشراء الجيم باس الخاص بك يدوياً. بمجرد الموافقة، ستصلك رسالة وستكون الروبوكس معلقة في حسابك على روبلوكس.",
+    "home.guide_note": "ملاحظة: تأكد دائماً أن الجيم باس عام وأن السعر مطابق تماماً للحاسبة."
   }
 };
 

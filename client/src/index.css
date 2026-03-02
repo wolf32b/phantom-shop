@@ -120,9 +120,17 @@
   }
 
   .text-shadow-blood {
-    text-shadow: 4px 4px 0px rgba(0, 0, 0, 1), 7px 7px 0px rgba(255, 0, 25, 0.6);
+    text-shadow: 4px 4px 0px rgba(0, 0, 0, 1), 8px 8px 0px rgba(255, 0, 25, 0.8);
   }
 
+  .text-shadow-red {
+    text-shadow: 0 0 20px rgba(255, 0, 0, 0.5), 0 0 40px rgba(255, 0, 0, 0.2);
+  }
+
+  .clip-path-comic-3 {
+    clip-path: polygon(2% 0%, 100% 8%, 98% 100%, 0% 92%);
+  }
+  
   .phantom-card {
     @apply relative bg-card border-4 border-secondary overflow-visible transition-transform duration-200;
     clip-path: polygon(0% 5%, 98% 0%, 100% 95%, 2% 100%);
