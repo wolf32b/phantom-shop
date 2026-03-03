@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
 import { useState } from "react";
 import { useLanguage } from "@/lib/LanguageContext";
+import { motion } from "framer-motion";
 
 export default function Shop() {
   const { data: stats } = useRobuxCounter();

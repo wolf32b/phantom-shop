@@ -47,6 +47,10 @@ const translations = {
     "home.guide_4_title": "4) ADMIN APPROVAL",
     "home.guide_4_desc": "Our admins will purchase your Gamepass manually. Once approved, you'll receive a notification and your Robux will be pending in your Roblox account.",
     "home.guide_note": "Note: Always ensure your Gamepass is public and the price matches the calculator exactly.",
+    "common.success": "Success",
+    "common.error": "Error"
+  },
+  ar: {
     "nav.hideout": "المخبأ",
     "nav.shop": "المتجر",
     "nav.orders": "الطلبات",
@@ -102,7 +106,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   }, [language]);
 
   const t = (key: string) => {
-    return (translations[language] as any)[key] || key;
+    const currentTranslations = translations[language] as any;
+    return currentTranslations[key] || key;
   };
 
   const isRtl = language === "ar";
