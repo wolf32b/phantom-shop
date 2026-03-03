@@ -5,6 +5,26 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import { PhantomButton } from "@/components/PhantomButton";
 import { useToast } from "@/hooks/use-toast";
+import { motion } from "framer-motion";
+import { 
+  ExternalLink, 
+  Check, 
+  X, 
+  RefreshCcw, 
+  User as UserIcon, 
+  Hash, 
+  CreditCard,
+  AlertCircle
+} from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 
 type AdminOrder = {
   id: number;
@@ -32,7 +52,7 @@ export default function AdminPanel() {
     if (user && !(user as any).isAdmin) setLocation("/");
   }, [user, setLocation]);
 
-  const { data: orders, isLoading } = useQuery<AdminOrder[]>({
+  const { data: orders, isLoading, isRefetching } = useQuery<AdminOrder[]>({
     queryKey: ["/api/admin/orders"],
     queryFn: async () => {
       const res = await fetch("/api/admin/orders", { credentials: "include" });
@@ -40,7 +60,7 @@ export default function AdminPanel() {
       return await res.json();
     },
     enabled: !!user && (user as any).isAdmin,
-    refetchInterval: 5000,
+    refetchInterval: 10000,
   });
 
   const approve = useMutation({
@@ -57,9 +77,13 @@ export default function AdminPanel() {
     onSuccess: async () => {
       setNote("");
       await queryClient.invalidateQueries({ queryKey: ["/api/admin/orders"] });
-      toast({ title: "APPROVED", description: "Order marked as approved.", className: "bg-black border-2 border-primary text-white font-display" });
+      toast({ 
+        title: "SUCCESSFUL HEIST", 
+        description: "Target neutralized. Robux delivered.", 
+        className: "bg-black border-2 border-primary text-white font-display" 
+      });
     },
-    onError: () => toast({ title: "ERROR", description: "Could not approve order.", variant: "destructive" }),
+    onError: () => toast({ title: "MISSION FAILED", description: "Could not approve order.", variant: "destructive" }),
   });
 
   const reject = useMutation({
@@ -76,108 +100,165 @@ export default function AdminPanel() {
     onSuccess: async () => {
       setNote("");
       await queryClient.invalidateQueries({ queryKey: ["/api/admin/orders"] });
-      toast({ title: "REJECTED", description: "Order rejected and refunded.", className: "bg-black border-2 border-primary text-white font-display" });
+      toast({ 
+        title: "TARGET REJECTED", 
+        description: "Operation cancelled. Funds returned.", 
+        className: "bg-black border-2 border-primary text-white font-display" 
+      });
     },
-    onError: () => toast({ title: "ERROR", description: "Could not reject order.", variant: "destructive" }),
+    onError: () => toast({ title: "MISSION FAILED", description: "Could not reject order.", variant: "destructive" }),
   });
 
+  if (!user || !(user as any).isAdmin) return null;
+
   return (
-    <div className="container mx-auto px-4 py-10">
-      <div className="mb-8">
-        <h1 className="text-6xl font-display text-white-p5 italic uppercase -skew-x-6">ADMIN PANEL</h1>
-        <p className="text-primary font-body font-bold italic mt-2">
-          Pending requests waiting for manual purchase.
-        </p>
-      </div>
+    <div className="container mx-auto px-4 py-12">
+      <motion.div 
+        initial={{ x: -50, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        className="mb-12 border-l-8 border-primary pl-6"
+      >
+        <h1 className="text-7xl font-display text-white-p5 italic uppercase -skew-x-6 leading-none">
+          COMMAND <span className="text-primary">CENTER</span>
+        </h1>
+        <div className="flex items-center gap-4 mt-4">
+          <p className="text-primary font-body font-black italic uppercase tracking-widest text-xl">
+            Infiltrating the market queue
+          </p>
+          <div className="h-px flex-grow bg-primary/30" />
+          <Badge className="bg-primary text-white font-display text-xl px-4 py-1 rounded-none rotate-2">
+            {orders?.length || 0} TARGETS PENDING
+          </Badge>
+        </div>
+      </motion.div>
 
-      <div className="bg-black border-4 border-primary shadow-[10px_10px_0px_0px_white] p-6">
-        <div className="flex flex-col md:flex-row md:items-center gap-4 md:justify-between mb-6">
-          <div className="text-white/80 font-body">
-            {isLoading ? "Loading..." : `${orders?.length || 0} pending order(s)`}
-          </div>
-
-          <div className="flex items-center gap-3">
+      <div className="bg-black/80 backdrop-blur-xl border-4 border-primary shadow-[15px_15px_0px_0px_white] relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 clip-path-comic-1 -z-10 halftone-pattern" />
+        
+        <div className="p-8 border-b-4 border-primary/20 flex flex-col md:flex-row md:items-end gap-6 justify-between bg-primary/5">
+          <div className="space-y-2">
+            <label className="block text-primary font-display text-sm uppercase tracking-[0.2em]">Transmission Message</label>
             <input
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              placeholder="Optional admin note..."
-              className="w-full md:w-80 bg-background border-2 border-primary text-foreground px-3 py-2 font-body focus:outline-none"
+              placeholder="Leave a calling card..."
+              className="w-full md:w-96 bg-background border-4 border-primary text-foreground px-4 py-3 font-display text-lg focus:outline-none focus:shadow-[0_0_15px_rgba(255,0,25,0.4)] transition-all italic uppercase"
             />
-            <button
-              onClick={() => queryClient.invalidateQueries({ queryKey: ["/api/admin/orders"] })}
-              className="px-4 py-2 bg-white text-black font-display border-2 border-primary hover:bg-primary hover:text-white transition"
-            >
-              REFRESH
-            </button>
           </div>
+
+          <button
+            onClick={() => queryClient.invalidateQueries({ queryKey: ["/api/admin/orders"] })}
+            disabled={isRefetching}
+            className="flex items-center gap-2 px-8 py-3 bg-white text-black font-display text-xl border-4 border-primary hover:bg-primary hover:text-white transition-all transform hover:-translate-y-1 active:translate-y-0"
+          >
+            <RefreshCcw className={isRefetching ? "animate-spin" : ""} size={20} />
+            SYNC DATA
+          </button>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="min-w-full text-left">
-            <thead>
-              <tr className="text-primary font-display text-lg border-b border-primary/40">
-                <th className="py-3 pr-4">Order</th>
-                <th className="py-3 pr-4">Gamepass</th>
-                <th className="py-3 pr-4">Receive</th>
-                <th className="py-3 pr-4">Expected Price</th>
-                <th className="py-3 pr-4">Actual Price</th>
-                <th className="py-3 pr-4">Phantom Code</th>
-                <th className="py-3 pr-4">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="text-white font-body">
-              {(orders || []).map((o) => (
-                <tr key={o.id} className="border-b border-primary/10 hover:bg-primary/5 transition">
-                  <td className="py-4 pr-4 font-display text-xl">#{o.id}</td>
-                  <td className="py-4 pr-4">
-                    <a
-                      href={o.gamepassUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-white underline hover:text-primary"
+          <Table>
+            <TableHeader className="bg-primary">
+              <TableRow className="border-none hover:bg-primary">
+                <TableHead className="text-white font-display text-2xl italic h-16">TARGET</TableHead>
+                <TableHead className="text-white font-display text-2xl italic h-16">ROBUX</TableHead>
+                <TableHead className="text-white font-display text-2xl italic h-16">VALUATION</TableHead>
+                <TableHead className="text-white font-display text-2xl italic h-16">INTEL</TableHead>
+                <TableHead className="text-white font-display text-2xl italic h-16 text-right">EXFILTRATION</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="h-64 text-center">
+                    <div className="flex flex-col items-center gap-4">
+                      <RefreshCcw className="h-12 w-12 animate-spin text-primary" />
+                      <span className="font-display text-2xl text-white italic">SCANNING NETWORK...</span>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ) : (orders || []).length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="h-64 text-center">
+                    <div className="flex flex-col items-center gap-4 opacity-30">
+                      <AlertCircle size={64} className="text-primary" />
+                      <span className="font-display text-3xl text-white italic">NO TARGETS DETECTED. THE STREETS ARE QUIET.</span>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ) : (orders || []).map((o) => (
+                <TableRow key={o.id} className="border-b border-primary/20 hover:bg-primary/5 transition-colors group">
+                  <TableCell>
+                    <div className="flex flex-col">
+                      <span className="font-display text-2xl text-white">#{o.id}</span>
+                      <div className="flex items-center gap-1 text-primary/60 font-mono text-xs">
+                        <UserIcon size={12} />
+                        {o.userId.slice(0, 12)}
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <div className="p-2 bg-primary/10 border border-primary/30 group-hover:bg-primary/20 transition-colors">
+                        <CreditCard className="text-primary" size={24} />
+                      </div>
+                      <span className="font-display text-3xl text-white italic">{o.amount} <span className="text-primary text-sm not-italic">R$</span></span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex flex-col">
+                      <span className="font-display text-2xl text-primary italic leading-none">{o.expectedPrice} R$</span>
+                      <span className="text-[10px] text-white/40 font-bold uppercase tracking-tighter">Required Price</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <button
+                      onClick={() => window.open(o.gamepassUrl, "_blank")}
+                      className="flex items-center gap-2 px-4 py-2 border-2 border-white/20 text-white/80 font-display italic hover:border-primary hover:text-white hover:bg-primary/10 transition-all"
                     >
-                      Open
-                    </a>
-                    <div className="text-[11px] text-white/50 mt-1">ID: {o.gamepassId}</div>
-                  </td>
-                  <td className="py-4 pr-4">{o.amount} R$</td>
-                  <td className="py-4 pr-4">{o.expectedPrice} R$</td>
-                  <td className="py-4 pr-4">{o.actualPrice} R$</td>
-                  <td className="py-4 pr-4 font-mono text-sm">{o.phantomCode}</td>
-                  <td className="py-4 pr-4">
-                    <div className="flex gap-3">
+                      <ExternalLink size={16} />
+                      GO TO TARGET
+                    </button>
+                    <div className="mt-1 flex items-center gap-1 text-[10px] text-white/30 font-mono">
+                      <Hash size={10} />
+                      {o.gamepassId}
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-4">
                       <PhantomButton
                         onClick={() => approve.mutate(o.id)}
                         disabled={approve.isPending || reject.isPending}
-                        className="px-4 py-2 text-base"
+                        className="px-6 py-2 text-xl shadow-[4px_4px_0px_0px_#fff] group-hover:shadow-[6px_6px_0px_0px_#fff] transition-all"
                       >
+                        <Check className="mr-2" size={20} />
                         APPROVE
                       </PhantomButton>
                       <button
                         onClick={() => reject.mutate(o.id)}
                         disabled={approve.isPending || reject.isPending}
-                        className="px-4 py-2 border-2 border-primary text-white font-display hover:bg-primary hover:text-white transition"
+                        className="px-6 py-2 border-4 border-primary text-white font-display text-xl hover:bg-primary hover:text-white transition-all transform hover:scale-105 active:scale-95 italic"
                       >
+                        <X className="mr-2 inline" size={20} />
                         REJECT
                       </button>
                     </div>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-              {(orders || []).length === 0 && !isLoading && (
-                <tr>
-                  <td colSpan={7} className="py-10 text-center text-white/50 italic">
-                    No pending orders. The hideout is quiet.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
+      </div>
 
-        <div className="mt-6 text-white/60 text-sm">
-          Tip: After you manually purchase the user’s Game Pass in Roblox, press <span className="text-white font-bold">APPROVE</span>.
-        </div>
+      <div className="mt-12 p-6 bg-primary border-4 border-black dark:border-white clip-path-comic-2">
+        <h4 className="font-display text-2xl text-black font-black italic uppercase flex items-center gap-2">
+          <AlertCircle className="inline" />
+          OPERATIONAL PROTOCOL
+        </h4>
+        <p className="text-black font-body text-lg font-bold leading-tight mt-2">
+          1. ACCESS THE TARGET LINK // 2. CONFIRM THE VALUATION MATCHES // 3. EXECUTE THE PURCHASE MANUALLY // 4. SIGN OFF WITH APPROVAL.
+        </p>
       </div>
     </div>
   );
