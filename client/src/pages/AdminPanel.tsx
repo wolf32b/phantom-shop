@@ -52,20 +52,33 @@ export default function AdminPanel() {
     if (user && !(user as any).isAdmin) setLocation("/");
   }, [user, setLocation]);
 
+  const [adminKey, setAdminKey] = useState(() => localStorage.getItem("p5_admin_key") || "");
+
+  useEffect(() => {
+    if (adminKey) {
+      localStorage.setItem("p5_admin_key", adminKey);
+    }
+  }, [adminKey]);
+
   const { data: orders, isLoading, isRefetching } = useQuery<AdminOrder[]>({
-    queryKey: ["/api/admin/orders"],
+    queryKey: ["/api/admin/orders", adminKey],
     queryFn: async () => {
-      const res = await fetch("/api/admin/orders", { credentials: "include" });
-      if (!res.ok) throw new Error("Failed to load orders");
+      const url = new URL("/api/admin/orders", window.location.origin);
+      if (adminKey) url.searchParams.set("key", adminKey);
+      const res = await fetch(url.toString(), { credentials: "include" });
+      if (!res.ok) throw new Error("Failed to load orders. Check your admin key.");
       return await res.json();
     },
-    enabled: !!user && (user as any).isAdmin,
+    // Enable if we have a key or user is admin
+    enabled: !!adminKey || (!!user && (user as any).isAdmin),
     refetchInterval: 10000,
   });
 
   const approve = useMutation({
     mutationFn: async (orderId: number) => {
-      const res = await fetch(`/api/admin/orders/${orderId}/approve`, {
+      const url = new URL(`/api/admin/orders/${orderId}/approve`, window.location.origin);
+      if (adminKey) url.searchParams.set("key", adminKey);
+      const res = await fetch(url.toString(), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -88,7 +101,9 @@ export default function AdminPanel() {
 
   const reject = useMutation({
     mutationFn: async (orderId: number) => {
-      const res = await fetch(`/api/admin/orders/${orderId}/reject`, {
+      const url = new URL(`/api/admin/orders/${orderId}/reject`, window.location.origin);
+      if (adminKey) url.searchParams.set("key", adminKey);
+      const res = await fetch(url.toString(), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -109,10 +124,34 @@ export default function AdminPanel() {
     onError: () => toast({ title: "MISSION FAILED", description: "Could not reject order.", variant: "destructive" }),
   });
 
-  if (!user || !(user as any).isAdmin) return null;
-
   return (
     <div className="container mx-auto px-4 py-12">
+      {!adminKey && (!user || !(user as any).isAdmin) && (
+        <div className="mb-8 p-6 bg-yellow-500/10 border-4 border-yellow-500 clip-path-comic-1">
+          <h2 className="text-2xl font-display text-yellow-500 mb-4 italic uppercase">ADMIN AUTHENTICATION REQUIRED</h2>
+          <div className="flex gap-4">
+            <input 
+              type="password"
+              placeholder="Enter Secret Admin Key..."
+              className="flex-grow bg-background border-2 border-yellow-500 p-2 text-foreground font-display focus:outline-none"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') setAdminKey((e.target as HTMLInputElement).value);
+              }}
+            />
+            <button 
+              className="bg-yellow-500 text-black px-6 font-display italic hover:bg-yellow-400 transition-colors"
+              onClick={(e) => {
+                const input = (e.currentTarget.previousElementSibling as HTMLInputElement);
+                setAdminKey(input.value);
+              }}
+            >
+              ACCESS
+            </button>
+          </div>
+          <p className="mt-2 text-xs text-yellow-500/60 font-mono italic tracking-tighter">Default bypass: phantom-admin-secure</p>
+        </div>
+      )}
+
       <motion.div 
         initial={{ x: -50, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
