@@ -148,7 +148,15 @@ export default function AdminPanel() {
               ACCESS
             </button>
           </div>
-          <p className="mt-2 text-xs text-yellow-500/60 font-mono italic tracking-tighter">Default bypass: phantom-admin-secure</p>
+          <p className="mt-2 text-xs text-yellow-500/60 font-mono italic tracking-tighter uppercase">Default access key: phantom-admin-secure</p>
+          <div className="mt-4 p-4 bg-black/40 border-2 border-yellow-500/30 text-yellow-500/80 text-sm font-body">
+            <p><strong>كيفية التفعيل:</strong></p>
+            <ol className="list-decimal list-inside mt-2 space-y-1">
+              <li>انسخ الكود الموجود أعلاه (أو الكود الذي خصصته في الإعدادات).</li>
+              <li>الصقه في الخانة الصفراء واضغط على <strong>ACCESS</strong>.</li>
+              <li>سيتم حفظ الكود في متصفحك ولن تضطر لإدخاله مرة أخرى.</li>
+            </ol>
+          </div>
         </div>
       )}
 
