@@ -47,12 +47,16 @@ export default function AdminPanel() {
   const { toast } = useToast();
   const [note, setNote] = useState("");
 
-  useEffect(() => {
-    if (user === null) setLocation("/login");
-    if (user && !(user as any).isAdmin) setLocation("/");
-  }, [user, setLocation]);
-
   const [adminKey, setAdminKey] = useState(() => localStorage.getItem("p5_admin_key") || "");
+
+  useEffect(() => {
+    // Completely disable all redirects for the Admin Panel.
+    // This allows the "Admin Key" bypass to work even if the user isn't logged in.
+    return;
+  }, []); 
+
+  // Add this to your useQuery and useMutation calls to ensure they don't fail due to 403
+  // when the session is missing but the key is present.
 
   useEffect(() => {
     if (adminKey) {
@@ -65,12 +69,12 @@ export default function AdminPanel() {
     queryFn: async () => {
       const url = new URL("/api/admin/orders", window.location.origin);
       if (adminKey) url.searchParams.set("key", adminKey);
-      const res = await fetch(url.toString(), { credentials: "include" });
+      const res = await fetch(url.toString()); // Remove credentials: "include" to avoid session conflicts when using key
       if (!res.ok) throw new Error("Failed to load orders. Check your admin key.");
       return await res.json();
     },
-    // Enable if we have a key or user is admin
-    enabled: !!adminKey || (!!user && (user as any).isAdmin),
+    // Enable if we have a key
+    enabled: !!adminKey,
     refetchInterval: 10000,
   });
 
@@ -81,7 +85,6 @@ export default function AdminPanel() {
       const res = await fetch(url.toString(), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify({ note }),
       });
       if (!res.ok) throw new Error("Approve failed");
@@ -106,7 +109,6 @@ export default function AdminPanel() {
       const res = await fetch(url.toString(), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify({ note }),
       });
       if (!res.ok) throw new Error("Reject failed");
