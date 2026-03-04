@@ -97,7 +97,11 @@ export default function Shop() {
                   whileHover={{ scale: 1.02 }}
                   className="p-6 border-4 border-primary rounded-lg bg-primary/5 hover:bg-primary/10 transition-colors shadow-[8px_8px_0px_0px_rgba(255,0,0,0.2)]"
                 >
-                  <h4 className="font-display text-3xl text-primary italic mb-4 uppercase tracking-tighter">01. PHANTOM CODE</h4>
+                  <div className="flex justify-between items-start mb-4">
+                    <h4 className="font-display text-3xl text-primary italic uppercase tracking-tighter">01. PHANTOM CODE</h4>
+                    <div className="bg-primary text-black px-2 py-1 font-display text-xs rotate-3">REQUIRED</div>
+                  </div>
+                  <p className="text-white/60 font-body text-sm mb-4 italic">Enter the code you received after purchase to unlock your balance.</p>
                   <input
                     type="text"
                     placeholder="PHANTOM-XXXX-XXXX"
@@ -113,6 +117,7 @@ export default function Shop() {
                   className="p-6 border-4 border-primary rounded-lg bg-primary/5 hover:bg-primary/10 transition-colors shadow-[8px_8px_0px_0px_rgba(255,0,0,0.2)]"
                 >
                   <h4 className="font-display text-3xl text-primary italic mb-4 uppercase tracking-tighter">02. TARGET GAMEPASS (ID)</h4>
+                  <p className="text-white/60 font-body text-sm mb-4 italic">Create a Gamepass on Roblox and paste its ID or URL here.</p>
                   <input
                     type="text"
                     value={gamepassUrl}
