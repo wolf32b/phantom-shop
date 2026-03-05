@@ -173,12 +173,35 @@ export default function Shop() {
                 </PhantomButton>
               </div>
 
-              <div className="bg-primary p-4 border-4 border-black dark:border-white">
-                <p className="text-xl text-black font-black text-center tracking-tighter uppercase italic">
-                  MUST SET GAMEPASS PRICE TO {requiredPrice} R$ FOR VERIFICATION
-                </p>
+                <div className="bg-primary p-4 border-4 border-black dark:border-white">
+                  <p className="text-xl text-black font-black text-center tracking-tighter uppercase italic">
+                    MUST SET GAMEPASS PRICE TO {requiredPrice} R$ FOR VERIFICATION
+                  </p>
+                </div>
+
+                <div className="flex flex-col items-center gap-4 py-4 border-t-2 border-primary/20">
+                  <div className="flex flex-wrap justify-center gap-6 opacity-80 grayscale hover:grayscale-0 transition-all duration-500">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" className="h-8" />
+                    <div className="flex items-center gap-2 px-3 py-1 bg-white rounded text-black font-black italic text-lg shadow-sm">
+                      <span className="text-[#003087]">mada</span>
+                    </div>
+                    <div className="flex items-center gap-1 px-3 py-1 bg-[#00753b] rounded text-white font-bold text-lg shadow-sm">
+                      <span>Meeza</span>
+                    </div>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" className="h-6 mt-1" />
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" className="h-10" />
+                    <div className="flex items-center gap-1 px-3 py-1 bg-[#231f20] rounded text-white font-bold text-lg shadow-sm">
+                      <span>KNET</span>
+                    </div>
+                    <div className="flex items-center gap-1 px-3 py-1 bg-[#1e2c4f] rounded text-white font-bold text-lg shadow-sm">
+                      <span>Benefit</span>
+                    </div>
+                  </div>
+                  <p className="text-primary font-display text-sm italic animate-pulse">
+                    {t("shop.payment_methods")}
+                  </p>
+                </div>
               </div>
-            </div>
           </PhantomCard>
         </div>
       </div>

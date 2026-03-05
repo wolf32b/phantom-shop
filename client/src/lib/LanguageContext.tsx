@@ -70,6 +70,7 @@ const translations = {
     "shop.gamepass_url": "رابط الجيم باس",
     "shop.gamepass_placeholder": "https://www.roblox.com/game-pass/...",
     "shop.gamepass_help": "أنشئ جيم باس على روبلوكس والصق الرابط هنا.",
+    "shop.payment_methods": "يدعم PayPal، مدى، ميزة، KNET، Benefit وجميع البطاقات العالمية",
     "auth.login": "تسلل",
     "auth.register": "تجنيد",
     "auth.verify": "تأكيد البريد",

@@ -627,21 +627,28 @@ export async function registerRoutes(
 
     try {
       const session = await stripe.checkout.sessions.create({
-        payment_method_types: ["card"],
+        payment_method_types: ["card", "paypal"],
         line_items: [
           {
             price_data: {
-              currency: "usd",
+              currency: "sar",
               product_data: {
                 name: `Phantom Code - ${amount} Robux`,
                 description: "Digital Robux redemption code",
               },
-              unit_amount: Math.ceil(amount / 100) * 100, // Crude pricing logic, should be mapped properly
+              unit_amount: Math.ceil(amount * 3.75),
             },
             quantity: 1,
           },
         ],
+        payment_method_options: {
+          card: {
+            request_three_d_secure: "any",
+          },
+        },
         mode: "payment",
+        allow_promotion_codes: true,
+        billing_address_collection: "auto",
         success_url: `${req.headers.origin}/shop?success=true&code=${codeStr}`,
         cancel_url: `${req.headers.origin}/shop?canceled=true`,
         customer_email: email,
@@ -690,17 +697,8 @@ export async function registerRoutes(
     if (!phantomCode) return res.status(404).json({ message: "Code not found" });
     if (phantomCode.remainingAmount < amount) return res.status(400).json({ message: "Insufficient balance in code" });
 
-    // Deduct from code and add to user or trigger heist
-    await storage.updatePhantomCodeAmount(phantomCode.id, phantomCode.remainingAmount - amount);
-    
     res.json({ success: true, remaining: phantomCode.remainingAmount - amount });
   });
-
-  // Ensure stats seeded only if no cookie
-  const currentRobux = await storage.getGlobalStat('total_robux');
-  if (currentRobux === 0 && !process.env.ROBLOX_COOKIE) {
-    await storage.setGlobalStat('total_robux', 1000000);
-  }
 
   return httpServer;
 }
