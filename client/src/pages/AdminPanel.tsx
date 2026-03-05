@@ -172,7 +172,7 @@ export default function AdminPanel() {
         </h1>
         <div className="flex items-center gap-4 mt-4">
           <p className="text-primary font-body font-black italic uppercase tracking-widest text-xl">
-            Infiltrating the market queue
+            Go for it, Joker.
           </p>
           <div className="h-px flex-grow bg-primary/30" />
           <Badge className="bg-primary text-white font-display text-xl px-4 py-1 rounded-none rotate-2">
@@ -209,11 +209,11 @@ export default function AdminPanel() {
           <Table>
             <TableHeader className="bg-primary">
               <TableRow className="border-none hover:bg-primary">
-                <TableHead className="text-white font-display text-2xl italic h-16">TARGET</TableHead>
+                <TableHead className="text-white font-display text-2xl italic h-16">USER</TableHead>
                 <TableHead className="text-white font-display text-2xl italic h-16">ROBUX</TableHead>
-                <TableHead className="text-white font-display text-2xl italic h-16">VALUATION</TableHead>
-                <TableHead className="text-white font-display text-2xl italic h-16">INTEL</TableHead>
-                <TableHead className="text-white font-display text-2xl italic h-16 text-right">EXFILTRATION</TableHead>
+                <TableHead className="text-white font-display text-2xl italic h-16">VERIFY</TableHead>
+                <TableHead className="text-white font-display text-2xl italic h-16">CODE</TableHead>
+                <TableHead className="text-white font-display text-2xl italic h-16 text-right">APRROVEAL</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -231,7 +231,7 @@ export default function AdminPanel() {
                   <TableCell colSpan={5} className="h-64 text-center">
                     <div className="flex flex-col items-center gap-4 opacity-30">
                       <AlertCircle size={64} className="text-primary" />
-                      <span className="font-display text-3xl text-white italic">NO TARGETS DETECTED. THE STREETS ARE QUIET.</span>
+                      <span className="font-display text-3xl text-white italic">No users remain, Greatjob.</span>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -303,7 +303,7 @@ export default function AdminPanel() {
       <div className="mt-12 p-6 bg-primary border-4 border-black dark:border-white clip-path-comic-2">
         <h4 className="font-display text-2xl text-black font-black italic uppercase flex items-center gap-2">
           <AlertCircle className="inline" />
-          OPERATIONAL PROTOCOL
+          Robux PROTOCOL
         </h4>
         <p className="text-black font-body text-lg font-bold leading-tight mt-2">
           1. ACCESS THE TARGET LINK // 2. CONFIRM THE VALUATION MATCHES // 3. EXECUTE THE PURCHASE MANUALLY // 4. SIGN OFF WITH APPROVAL.

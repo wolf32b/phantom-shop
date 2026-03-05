@@ -20,7 +20,7 @@ export function Footer() {
         {/* Social Icons with jagged containers */}
         <div className="flex items-center gap-6">
           <a 
-            href="https://discord.com" 
+            href="https://discord.gg/esFJ8Tjc9n" 
             target="_blank" 
             rel="noreferrer"
             className="group relative w-12 h-12 flex items-center justify-center bg-white hover:bg-[#5865F2] transition-colors duration-300 clip-path-shard transform hover:scale-110"

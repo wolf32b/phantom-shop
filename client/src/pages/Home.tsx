@@ -97,7 +97,7 @@ export default function Home() {
       <section className="w-full max-w-5xl mx-auto mt-20 px-4 mb-20">
         <div className="bg-black/90 border-4 border-primary p-8 shadow-[15px_15px_0px_0px_white] dark:shadow-[15px_15px_0px_0px_rgba(255,0,0,0.3)] backdrop-blur-md">
           <h2 className="font-display text-5xl md:text-6xl text-white italic uppercase -skew-x-6 mb-8 border-b-4 border-primary pb-4 inline-block">
-            {t("hideout.guide_title") || "HOW TO BUY ROBUX"}
+            {t("How To buy Robux") || "HOW TO BUY ROBUX"}
           </h2>
 
           <div className="grid md:grid-cols-2 gap-8 text-white/80 font-body leading-relaxed">

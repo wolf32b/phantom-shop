@@ -33,3 +33,14 @@ outputType = "webview"
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[userenv]
+
+[userenv.shared]
+STRIPE_WEBHOOK_SECRET = "whsec_GxdUBX0mJI7korI36YNHdihzqGUu5mQY"
+
+[deployment]
+deploymentTarget = "cloudrun"
+publicDir = "dist/client"
+build = ["sh", "-c", "npm run build"]
+run = ["sh", "-c", "node dist/index.cjs"]
