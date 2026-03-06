@@ -132,7 +132,7 @@ export default function Login() {
         
         <div className="text-center mb-8 relative z-10">
           <div className="w-20 h-20 bg-primary mx-auto mb-6 flex items-center justify-center transform rotate-3 shadow-[6px_6px_0px_0px_#fff] border-4 border-white">
-            <span className="font-display text-4xl text-black font-bold italic">P5</span>
+            <span className="font-display text-4xl text-black font-bold italic">R</span>
           </div>
           <h1 className="text-6xl font-display text-white-p5 mb-3 transform -skew-x-6 italic uppercase">
             {step === "login" ? "INFILTRATE" : "RECRUIT"}
