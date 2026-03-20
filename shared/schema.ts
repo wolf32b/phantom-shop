@@ -1,0 +1,82 @@
+import { pgTable, text, serial, integer, boolean, timestamp, varchar } from "drizzle-orm/pg-core";
+import { createInsertSchema } from "drizzle-zod";
+import { z } from "zod";
+import { users } from "./models/auth";
+
+export * from "./models/auth";
+
+export const globalStats = pgTable("global_stats", {
+  id: serial("id").primaryKey(),
+  key: text("key").notNull().unique(), // e.g., 'total_robux'
+  value: integer("value").default(0).notNull(),
+});
+
+export const orders = pgTable("orders", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull(),
+  amount: integer("amount").notNull(), // Robux the user will receive
+  phantomCode: text("phantom_code").notNull(),
+  gamepassUrl: text("gamepass_url").notNull(), // full URL the user submitted
+  gamepassId: text("gamepass_id").notNull(), // extracted numeric id
+  expectedPrice: integer("expected_price").notNull(), // the price user must set (after 30% fee)
+  actualPrice: integer("actual_price").notNull(), // verified price on Roblox
+  status: text("status").notNull().default("pending_admin"),
+  adminNote: text("admin_note"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+
+export const insertOrderSchema = z.object({
+  amount: z.number().min(1, "Amount must be at least 1"),
+  gamepassUrl: z.string().min(1, "Gamepass URL or ID is required"),
+  phantomCode: z.string().min(4, "Invalid Phantom Code"),
+});
+
+export const phantomCodes = pgTable("phantom_codes", {
+  id: serial("id").primaryKey(),
+  code: text("code").notNull().unique(),
+  initialAmount: integer("initial_amount").notNull(),
+  remainingAmount: integer("remaining_amount").notNull(),
+  email: text("email").notNull(),
+  buyerName: text("buyer_name"),
+  isPaid: boolean("is_paid").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertPhantomCodeSchema = createInsertSchema(phantomCodes).omit({ 
+  id: true, 
+  createdAt: true,
+  isPaid: true
+});
+
+export type PhantomCode = typeof phantomCodes.$inferSelect;
+export type InsertPhantomCode = z.infer<typeof insertPhantomCodeSchema>;
+
+export type Order = typeof orders.$inferSelect;
+export type InsertOrder = z.infer<typeof insertOrderSchema>;
+
+export const notifications = pgTable("notifications", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull(),
+  title: text("title").notNull(),
+  message: text("message").notNull(),
+  isRead: boolean("is_read").default(false).notNull(),
+  type: text("type").default("info").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export type Notification = typeof notifications.$inferSelect;
+export type InsertNotification = typeof notifications.$inferInsert;
+
+export const reviews = pgTable("reviews", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().unique(),
+  username: text("username").notNull(),
+  rating: integer("rating").notNull(),
+  text: text("text").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export type Review = typeof reviews.$inferSelect;
+export type InsertReview = typeof reviews.$inferInsert;

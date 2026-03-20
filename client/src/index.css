@@ -1,0 +1,164 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 100%;       /* Pure White */
+  --foreground: 0 0% 0%;         /* Pure Black */
+  
+  --primary: 354 100% 50%;      /* #FF0019 - Crimson Red */
+  --primary-foreground: 0 0% 100%;
+  
+  --secondary: 0 0% 0%;        /* Black */
+  --secondary-foreground: 0 0% 100%;
+  
+  --muted: 0 0% 90%;
+  --muted-foreground: 0 0% 20%;
+  
+  --accent: 354 100% 50%;
+  --accent-foreground: 0 0% 100%;
+  
+  --border: 0 0% 0%;
+  --input: 0 0% 100%;
+  --ring: 354 100% 50%;
+
+  --font-display: 'Oswald', sans-serif;
+  --font-body: 'Roboto Condensed', sans-serif;
+}
+
+.dark {
+  --background: 0 0% 0%;        /* Pure Black */
+  --foreground: 0 0% 100%;      /* Pure White */
+  
+  --primary: 354 100% 50%;      /* Crimson Red */
+  --primary-foreground: 0 0% 100%;
+  
+  --secondary: 0 0% 100%;       /* White */
+  --secondary-foreground: 0 0% 0%;
+  
+  --muted: 0 0% 10%;
+  --muted-foreground: 0 0% 60%;
+  
+  --accent: 354 100% 50%;
+  --accent-foreground: 0 0% 100%;
+  
+  --border: 354 100% 50%;
+  --input: 0 0% 5%;
+  --ring: 354 100% 50%;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground font-body overflow-x-hidden selection:bg-primary selection:text-white transition-colors duration-500;
+    background-image: 
+      radial-gradient(circle at 50% 50%, hsla(var(--primary) / 0.05) 0%, transparent 100%),
+      repeating-linear-gradient(45deg, hsla(var(--foreground) / 0.02) 0px, hsla(var(--foreground) / 0.02) 1px, transparent 1px, transparent 10px);
+  }
+
+  /* Force white text in P5 elements that should always be light on dark */
+  .dark .text-white-p5 {
+    @apply text-white;
+  }
+  
+  :root:not(.dark) .text-white-p5 {
+    @apply text-black;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tighter uppercase transform -skew-x-6 text-foreground;
+  }
+}
+
+@layer utilities {
+  .clip-path-p5-angle {
+    clip-path: polygon(5% 0, 100% 0, 95% 100%, 0% 100%);
+  }
+
+  .clip-path-comic-1 {
+    clip-path: polygon(0% 10%, 95% 0%, 100% 90%, 5% 100%);
+  }
+
+  .clip-path-comic-2 {
+    clip-path: polygon(5% 0%, 100% 5%, 95% 100%, 0% 95%);
+  }
+  
+  .halftone-pattern {
+    background-image: radial-gradient(circle, currentColor 1px, transparent 1px);
+    background-size: 6px 6px;
+  }
+
+  .comic-border-gold {
+    @apply border-4 border-secondary shadow-[8px_8px_0px_0px_rgba(255,0,25,1)];
+  }
+
+  .gold-shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 215, 0, 0) 0%,
+      rgba(255, 215, 0, 0.9) 50%,
+      rgba(255, 215, 0, 0) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite linear;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  @keyframes spark-fade {
+    0% { opacity: 0; transform: scale(0.5) rotate(45deg); }
+    20% { opacity: 1; transform: scale(1) rotate(45deg); }
+    100% { opacity: 0; transform: scale(1.5) rotate(45deg); }
+  }
+
+  .animate-spark-fade {
+    animation: spark-fade 1.5s ease-out forwards;
+  }
+
+  .text-shadow-blood {
+    text-shadow: 4px 4px 0px rgba(0, 0, 0, 1), 8px 8px 0px rgba(255, 0, 25, 0.8);
+  }
+
+  .text-shadow-red {
+    text-shadow: 0 0 20px rgba(255, 0, 0, 0.5), 0 0 40px rgba(255, 0, 0, 0.2);
+  }
+
+  .clip-path-comic-3 {
+    clip-path: polygon(2% 0%, 100% 8%, 98% 100%, 0% 92%);
+  }
+  
+  .phantom-card {
+    @apply relative bg-card border-4 border-secondary overflow-visible transition-transform duration-200;
+    clip-path: polygon(0% 5%, 98% 0%, 100% 95%, 2% 100%);
+    box-shadow: 12px 12px 0px 0px #FF0019;
+  }
+
+  .phantom-card:hover {
+    transform: translate(-4px, -4px);
+    box-shadow: 16px 16px 0px 0px #FF0019;
+  }
+
+  .phantom-card::before {
+    content: '';
+    @apply absolute -inset-1 bg-secondary/20 -z-10 blur-md opacity-0 hover:opacity-100 transition-opacity;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 12px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary));
+  border: 3px solid hsl(var(--background));
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--secondary));
+}
