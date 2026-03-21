@@ -197,22 +197,6 @@ async function setupGoogleAuth(app: Express) {
       });
     });
   });
-
-  // ─── CAPTCHA: Generate a math challenge ───────────────────────────────────
-  app.get("/api/auth/captcha", (_req, res) => {
-    const a = Math.floor(Math.random() * 10) + 1;
-    const b = Math.floor(Math.random() * 10) + 1;
-    const ops = ["+", "-", "*"] as const;
-    const op = ops[Math.floor(Math.random() * ops.length)];
-    let answer: number;
-    let question: string;
-    if (op === "+") { answer = a + b; question = `${a} + ${b}`; }
-    else if (op === "-") { const [big, small] = a >= b ? [a, b] : [b, a]; answer = big - small; question = `${big} - ${small}`; }
-    else { answer = a * b; question = `${a} × ${b}`; }
-    const id = generateCaptchaId();
-    captchaStore.set(id, { answer, expiresAt: Date.now() + 5 * 60 * 1000 });
-    res.json({ id, question: `${question} = ?` });
-  });
 }
 
 function requireAdmin(req: any, res: any, next: any) {
@@ -241,6 +225,23 @@ export async function registerRoutes(
       cb(err);
     }
   });
+
+  // ─── CAPTCHA: Generate a math challenge ───────────────────────────────────
+  app.get("/api/auth/captcha", (_req, res) => {
+    const a = Math.floor(Math.random() * 10) + 1;
+    const b = Math.floor(Math.random() * 10) + 1;
+    const ops = ["+", "-", "*"] as const;
+    const op = ops[Math.floor(Math.random() * ops.length)];
+    let answer: number;
+    let question: string;
+    if (op === "+") { answer = a + b; question = `${a} + ${b}`; }
+    else if (op === "-") { const [big, small] = a >= b ? [a, b] : [b, a]; answer = big - small; question = `${big} - ${small}`; }
+    else { answer = a * b; question = `${a} × ${b}`; }
+    const id = generateCaptchaId();
+    captchaStore.set(id, { answer, expiresAt: Date.now() + 5 * 60 * 1000 });
+    res.json({ id, question: `${question} = ?` });
+  });
+  // ─────────────────────────────────────────────────────────────────────────────
 
   app.post("/api/auth/register", async (req, res) => {
     try {
