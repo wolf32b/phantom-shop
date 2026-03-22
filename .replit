@@ -29,3 +29,10 @@ outputType = "webview"
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[userenv]
+
+[userenv.shared]
+PAYMENT_BANK_NAME = "STC Bank"
+PAYMENT_IBAN = "SA8778000000001291276527"
+PAYMENT_ACCOUNT_NAME = "خ****"

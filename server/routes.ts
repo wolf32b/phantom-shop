@@ -790,6 +790,7 @@ export async function registerRoutes(
         iban: process.env.PAYMENT_IBAN || "SA00 0000 0000 0000 0000 0000",
         accountName: process.env.PAYMENT_ACCOUNT_NAME || "اسم صاحب الحساب",
         stcPay: process.env.PAYMENT_STCPAY || null,
+        phonePay: process.env.PAYMENT_PHONE || null,
       };
 
       // Send purchase confirmation email

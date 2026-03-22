@@ -3,13 +3,14 @@ import { useLanguage } from "@/lib/LanguageContext";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { Copy, CheckCircle2, Clock, Banknote, Smartphone, Zap, Shield, Star } from "lucide-react";
+import { Copy, CheckCircle2, Clock, Banknote, Smartphone, Zap, Shield, Star, CreditCard } from "lucide-react";
 
 type PaymentInfo = {
   bankName: string;
   iban: string;
   accountName: string;
   stcPay: string | null;
+  phonePay: string | null;
 };
 
 type PurchaseResult = {
@@ -124,31 +125,66 @@ export default function Codes() {
             </p>
           </div>
 
-          {/* Payment instructions */}
+          {/* Payment methods */}
           <div className="bg-background border-4 border-primary p-6 mb-5 shadow-[8px_8px_0px_0px_hsl(var(--foreground))]">
             <h2 className="font-display text-2xl text-foreground uppercase italic flex items-center gap-3 mb-6">
               <Banknote className="text-primary shrink-0" size={24} />
-              {ar ? "تعليمات التحويل البنكي" : "BANK TRANSFER INSTRUCTIONS"}
+              {ar ? "طرق الدفع" : "PAYMENT METHODS"}
             </h2>
 
-            <div className="space-y-3">
-              {[
-                { label: ar ? "اسم البنك" : "Bank Name",         value: result.paymentInfo.bankName,    key: "bank" },
-                { label: ar ? "رقم الآيبان" : "IBAN Number",     value: result.paymentInfo.iban,        key: "iban" },
-                { label: ar ? "اسم صاحب الحساب" : "Account Name", value: result.paymentInfo.accountName, key: "acname" },
-              ].map(({ label, value, key }) => (
-                <div key={key} className="flex items-center justify-between bg-foreground/5 border border-foreground/10 p-4 gap-3">
-                  <div className="min-w-0">
-                    <p className="text-foreground/40 text-xs font-body uppercase tracking-wider mb-1">{label}</p>
-                    <p className="text-foreground font-display text-lg break-all">{value}</p>
+            {/* Bank Transfer */}
+            <div className="mb-4">
+              <div className="flex items-center gap-2 mb-3">
+                <Banknote className="text-primary" size={16} />
+                <span className="font-display text-sm uppercase tracking-widest text-foreground/60">
+                  {ar ? "تحويل بنكي" : "Bank Transfer"}
+                </span>
+              </div>
+              <div className="space-y-2">
+                {[
+                  { label: ar ? "اسم البنك" : "Bank Name",          value: result.paymentInfo.bankName,    key: "bank" },
+                  { label: ar ? "رقم الآيبان" : "IBAN Number",      value: result.paymentInfo.iban,        key: "iban" },
+                  { label: ar ? "اسم صاحب الحساب" : "Account Name", value: result.paymentInfo.accountName, key: "acname" },
+                ].map(({ label, value, key }) => (
+                  <div key={key} className="flex items-center justify-between bg-foreground/5 border border-foreground/10 p-4 gap-3">
+                    <div className="min-w-0">
+                      <p className="text-foreground/40 text-xs font-body uppercase tracking-wider mb-1">{label}</p>
+                      <p className="text-foreground font-display text-lg break-all">{value}</p>
+                    </div>
+                    <button onClick={() => copy(value, key)} className="text-primary hover:text-foreground transition-colors shrink-0">
+                      {copied === key ? <CheckCircle2 size={22} /> : <Copy size={22} />}
+                    </button>
                   </div>
-                  <button onClick={() => copy(value, key)} className="text-primary hover:text-foreground transition-colors shrink-0">
-                    {copied === key ? <CheckCircle2 size={22} /> : <Copy size={22} />}
+                ))}
+              </div>
+            </div>
+
+            {/* Apple Pay / Google Pay / STC Pay */}
+            {result.paymentInfo.phonePay && (
+              <div className="mt-4 pt-4 border-t-2 border-foreground/10">
+                <div className="flex items-center gap-2 mb-3">
+                  <CreditCard className="text-primary" size={16} />
+                  <span className="font-display text-sm uppercase tracking-widest text-foreground/60">
+                    Apple Pay &nbsp;·&nbsp; Google Pay &nbsp;·&nbsp; STC Pay
+                  </span>
+                </div>
+                <div className="flex items-center justify-between bg-foreground/5 border border-primary/30 p-4 gap-3">
+                  <div>
+                    <p className="text-primary text-xs font-body uppercase tracking-wider mb-1">
+                      {ar ? "رقم الجوال" : "Mobile Number"}
+                    </p>
+                    <p className="text-foreground font-display text-lg tracking-widest">{result.paymentInfo.phonePay}</p>
+                  </div>
+                  <button onClick={() => copy(result.paymentInfo.phonePay!, "phone")} className="text-primary hover:text-foreground transition-colors">
+                    {copied === "phone" ? <CheckCircle2 size={22} /> : <Copy size={22} />}
                   </button>
                 </div>
-              ))}
+              </div>
+            )}
 
-              {result.paymentInfo.stcPay && (
+            {/* STC Pay (standalone if no phonePay) */}
+            {result.paymentInfo.stcPay && !result.paymentInfo.phonePay && (
+              <div className="mt-4 pt-4 border-t-2 border-foreground/10">
                 <div className="flex items-center justify-between bg-green-500/10 border border-green-500/30 p-4 gap-3">
                   <div>
                     <p className="text-green-500 text-xs font-body uppercase tracking-wider mb-1 flex items-center gap-1">
@@ -160,8 +196,8 @@ export default function Codes() {
                     {copied === "stc" ? <CheckCircle2 size={22} /> : <Copy size={22} />}
                   </button>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
 
             <div className="border-t-2 border-foreground/10 mt-5 pt-5 flex items-center justify-between">
               <span className="font-display text-lg text-foreground uppercase">
